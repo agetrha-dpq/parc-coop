@@ -70,7 +70,6 @@
     border-radius:60px;
     backdrop-filter:blur(6px);
   }
-  /* ---- LOGOTIPO AGETRHA ---- */
   .logo-mark{
     width:48px;
     height:48px;
@@ -142,6 +141,13 @@
     color:var(--azul-800);margin-bottom:8px;letter-spacing:.2px;
   }
   .req{color:var(--vermelho);font-weight:700;margin-left:2px}
+  .opt{
+    color:var(--cinza-600);
+    font-weight:500;
+    font-size:.76rem;
+    margin-left:6px;
+    letter-spacing:.2px;
+  }
 
   input[type=text],
   input[type=tel],
@@ -198,6 +204,79 @@
   .counter.limite{color:var(--ciano-500);font-weight:700}
 
   .hint{font-size:.74rem;color:var(--cinza-600);margin-top:7px;line-height:1.5}
+
+  /* ================= CAMPO PDF ================= */
+  .file-input-hidden{
+    position:absolute;
+    width:1px;height:1px;
+    padding:0;margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;border:0;
+  }
+
+  .pdf-drop{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 18px;
+    background:linear-gradient(180deg,#f3fbff 0%,#eaf6fd 100%);
+    border:1.8px dashed #8fd4e6;
+    border-radius:12px;
+    cursor:pointer;
+    transition:border-color .18s, background .18s, box-shadow .18s, transform .12s;
+  }
+  .pdf-drop:hover{
+    border-color:var(--ciano-500);
+    background:linear-gradient(180deg,#eaf9ff 0%,#e0f4fd 100%);
+    box-shadow:0 0 0 4px rgba(6,182,212,.10);
+  }
+  .pdf-drop.dragover{
+    border-color:var(--ciano-500);
+    background:#e0f7fc;
+    box-shadow:0 0 0 4px rgba(6,182,212,.18);
+    transform:scale(1.005);
+  }
+  .pdf-drop.has-file{
+    border-style:solid;
+    border-color:#7dd3a6;
+    background:linear-gradient(180deg,#f2fdf7 0%,#e6f9ee 100%);
+  }
+
+  .pdf-icon{
+    width:44px;height:44px;flex:0 0 auto;
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--azul-700),var(--ciano-500));
+    color:#fff;
+    box-shadow:0 6px 14px -6px rgba(6,182,212,.7);
+  }
+  .pdf-icon svg{width:22px;height:22px}
+  .pdf-drop.has-file .pdf-icon{
+    background:linear-gradient(135deg,#1e9d63,#22c777);
+    box-shadow:0 6px 14px -6px rgba(30,157,99,.7);
+  }
+
+  .pdf-text{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+  .pdf-text strong{
+    font-size:.88rem;color:var(--azul-800);font-weight:700;letter-spacing:.2px;
+  }
+  .pdf-text span{
+    font-size:.76rem;color:var(--cinza-600);line-height:1.5;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .pdf-drop.has-file .pdf-text strong{color:#0b6b45}
+
+  .pdf-clear{
+    background:transparent;border:none;cursor:pointer;
+    color:var(--cinza-600);font-size:1.35rem;line-height:1;
+    padding:4px 8px;border-radius:8px;
+    transition:.16s;font-family:inherit;
+    display:none;
+  }
+  .pdf-clear:hover{background:#fdeef1;color:var(--vermelho)}
+  .pdf-drop.has-file .pdf-clear{display:block}
 
   /* ================= TERMO ================= */
   .termo-box{
@@ -359,7 +438,6 @@
 
 <!-- ============================================================
      CABEÇALHO / HERO
-     Logotipo oficial da AGETRHA
      ============================================================ -->
 <header class="hero">
   <div class="hero-inner">
@@ -396,7 +474,7 @@
   <form id="formParceria" autocomplete="on">
     <div class="grid">
 
-      <!-- 1. Primeiro e Último Nome -->
+      <!-- 1. Primeiro e Último Nome (obrigatório) -->
       <div class="field">
         <label for="nome">Primeiro e Último Nome <span class="req">*</span></label>
         <input type="text" id="nome" name="nome" placeholder="Ex.: Ana Silva"
@@ -405,14 +483,14 @@
                title="Apenas letras e espaços (mínimo 3 caracteres).">
       </div>
 
-      <!-- 2. Organização -->
+      <!-- 2. Organização (OPCIONAL) -->
       <div class="field">
-        <label for="organizacao">Organização <span class="req">*</span></label>
+        <label for="organizacao">Organização <span class="opt">(opcional)</span></label>
         <input type="text" id="organizacao" name="organizacao"
-               placeholder="Nome da instituição / empresa" required maxlength="120">
+               placeholder="Nome da instituição / empresa" maxlength="120">
       </div>
 
-      <!-- 3. Tel/Whatsapp -->
+      <!-- 3. Tel/Whatsapp (obrigatório) -->
       <div class="field">
         <label for="telefone">Tel/Whatsapp <span class="req">*</span></label>
         <input type="tel" id="telefone" name="telefone" placeholder="Ex.: 923000000"
@@ -421,14 +499,14 @@
                title="Introduza apenas números (9 a 15 dígitos).">
       </div>
 
-      <!-- 4. E-mail -->
+      <!-- 4. E-mail (obrigatório) -->
       <div class="field">
         <label for="email">E-mail <span class="req">*</span></label>
         <input type="email" id="email" name="email"
                placeholder="nome@instituicao.co.ao" required maxlength="120">
       </div>
 
-      <!-- 5. Natureza do Evento -->
+      <!-- 5. Natureza do Evento (obrigatório) -->
       <div class="field full">
         <label for="natureza_evento">Natureza do Evento <span class="req">*</span></label>
         <select id="natureza_evento" name="natureza_evento" required>
@@ -452,13 +530,13 @@
         </select>
       </div>
 
-      <!-- 6. Data do Evento -->
+      <!-- 6. Data do Evento (obrigatório) -->
       <div class="field">
         <label for="data_evento">Data do Evento <span class="req">*</span></label>
         <input type="date" id="data_evento" name="data_evento" required>
       </div>
 
-      <!-- 7. Duração do Evento -->
+      <!-- 7. Duração do Evento (obrigatório) -->
       <div class="field">
         <label>Duração do Evento <span class="req">*</span></label>
         <div class="duracao-wrap">
@@ -474,24 +552,55 @@
         <span class="hint">Apenas horário (HH:MM).</span>
       </div>
 
-      <!-- 8. Local do Evento -->
+      <!-- 8. Local do Evento (obrigatório) -->
       <div class="field full">
         <label for="local_evento">Local do Evento <span class="req">*</span></label>
         <input type="text" id="local_evento" name="local_evento"
                placeholder="Ex.: Auditório da AGETRHA, Luanda" required maxlength="180">
       </div>
 
-      <!-- 9. Outros detalhes -->
+      <!-- 9. Outros detalhes (opcional) -->
       <div class="field full">
-        <label for="detalhes">Outros detalhes</label>
+        <label for="detalhes">Outros detalhes <span class="opt">(opcional)</span></label>
         <textarea id="detalhes" name="detalhes" maxlength="3000"
                   placeholder="Descreva o contexto, objectivos, público-alvo, número estimado de participantes e as condições de participação da AGETRHA..."></textarea>
         <span class="counter" id="contador">0 / 3000 caracteres</span>
       </div>
 
+      <!-- 10. Documento PDF (OPCIONAL) -->
+      <div class="field full">
+        <label for="pdf">Documento da Actividade (PDF) <span class="opt">(opcional)</span></label>
+
+        <label class="pdf-drop" id="pdfDrop" for="pdf">
+          <input type="file" id="pdf" name="pdf" class="file-input-hidden"
+                 accept="application/pdf,.pdf">
+
+          <span class="pdf-icon" id="pdfIcon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </span>
+
+          <span class="pdf-text">
+            <strong id="pdfTitulo">Clique para anexar o PDF</strong>
+            <span id="pdfInfo">Apenas ficheiros PDF · Máx. 5 MB</span>
+          </span>
+
+          <button type="button" class="pdf-clear" id="pdfLimpar"
+                  aria-label="Remover PDF" title="Remover ficheiro">&times;</button>
+        </label>
+
+        <span class="hint">
+          Pode anexar o documento descritivo da actividade (programa, carta, convite ou proposta de parceria) — este passo é opcional.
+        </span>
+      </div>
+
     </div>
 
-    <!-- 10. Termo de parceria + ponto de verificação -->
+    <!-- 11. Termo de parceria + ponto de verificação -->
     <div class="termo-box">
       <div class="termo-check">
         <input type="checkbox" id="aceite_termo" name="aceite_termo" required>
@@ -515,7 +624,7 @@
       </button>
     </div>
 
-    <!-- 11. Botão de envio -->
+    <!-- 12. Botão de envio -->
     <div class="actions">
       <button type="submit" class="btn-enviar" id="btnEnviar" disabled>
         ENVIAR SOLICITAÇÃO
@@ -527,7 +636,7 @@
 </main>
 
 <footer class="footer">
-  AGETRHA — Associação de Gestores e Técnicos de Recursos Humanos de Angola<br>
+  AGETRHA — Associação de Gestão e Transferência de Recursos Humanos e Apoio<br>
   © <span id="anoAtual"></span> AGETRHA. Todos os direitos reservados.
 </footer>
 
@@ -571,7 +680,10 @@
 /* ============================================================
    CONFIGURAÇÃO — URL DO GOOGLE APPS SCRIPT
    ============================================================ */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxxK41Ir_ubt6WCzXAhKzwZrAkpoxr-5KjWjkqutGOnupWZRY7yApx1D79YaPXCMjYTBA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyblZvzmGuaCHN6OlwgmAFptX5Ef8_fkp1Wc9TgBgIaNQtI3aHmUcQh2sJE4MaNJqhYtA/exec';
+
+/* Limite máximo do PDF (5 MB) */
+const PDF_MAX_BYTES = 5 * 1024 * 1024;
 
 /* ============================================================
    REFERÊNCIAS
@@ -591,6 +703,17 @@ const alerta      = document.getElementById('alerta');
 const modal       = document.getElementById('modalTermo');
 const btnAbrir    = document.getElementById('btnAbrirTermo');
 
+/* --- PDF --- */
+const inpPdf      = document.getElementById('pdf');
+const pdfDrop     = document.getElementById('pdfDrop');
+const pdfTitulo   = document.getElementById('pdfTitulo');
+const pdfInfo     = document.getElementById('pdfInfo');
+const pdfLimpar   = document.getElementById('pdfLimpar');
+
+let pdfBase64 = '';      // conteúdo em base64 (sem prefixo data:) — vazio = sem ficheiro
+let pdfNome   = '';
+let pdfBytes  = 0;
+
 /* ============================================================
    ANO NO RODAPÉ
    ============================================================ */
@@ -609,7 +732,6 @@ document.getElementById('anoAtual').textContent = new Date().getFullYear();
    MÁSCARAS / RESTRIÇÕES DE ENTRADA
    ============================================================ */
 
-/* Nome — apenas letras, espaços, hífen e apóstrofos */
 inpNome.addEventListener('input', () => {
   inpNome.value = inpNome.value
     .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'´`\-\s]/g, '')
@@ -617,7 +739,6 @@ inpNome.addEventListener('input', () => {
     .replace(/^\s+/, '');
 });
 
-/* Telefone — apenas números */
 inpTel.addEventListener('input', () => {
   inpTel.value = inpTel.value.replace(/\D/g, '').slice(0, 15);
 });
@@ -627,7 +748,6 @@ inpTel.addEventListener('paste', (e) => {
   inpTel.value = texto.replace(/\D/g, '').slice(0, 15);
 });
 
-/* Contador de caracteres do campo "Outros detalhes" */
 txtDetalhes.addEventListener('input', () => {
   const n = txtDetalhes.value.length;
   contador.textContent = n + ' / 3000 caracteres';
@@ -635,7 +755,93 @@ txtDetalhes.addEventListener('input', () => {
 });
 
 /* ============================================================
-   BOTÃO ENVIAR — SÓ ACTIVO COM O PONTO DE VERIFICAÇÃO
+   GESTÃO DO PDF (opcional)
+   ============================================================ */
+function formatarTamanho(bytes){
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function limparPDF(){
+  pdfBase64 = '';
+  pdfNome   = '';
+  pdfBytes  = 0;
+  inpPdf.value = '';
+  pdfDrop.classList.remove('has-file');
+  pdfTitulo.textContent = 'Clique para anexar o PDF';
+  pdfInfo.textContent   = 'Apenas ficheiros PDF · Máx. 5 MB';
+}
+
+function lerPDF(file){
+  const isPdf = file.type === 'application/pdf' ||
+                file.name.toLowerCase().endsWith('.pdf');
+  if (!isPdf){
+    mostrarAlerta('erro', '❌ O ficheiro selecionado não é um PDF válido.');
+    limparPDF();
+    return;
+  }
+  if (file.size > PDF_MAX_BYTES){
+    mostrarAlerta('erro',
+      `❌ O PDF excede o limite de 5 MB (tamanho: ${formatarTamanho(file.size)}).`);
+    limparPDF();
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const resultado = reader.result;
+    pdfBase64 = resultado.substring(resultado.indexOf(',') + 1);
+    pdfNome   = file.name;
+    pdfBytes  = file.size;
+
+    pdfTitulo.textContent = '✓ ' + pdfNome;
+    pdfInfo.textContent   = formatarTamanho(pdfBytes) + ' · pronto para enviar';
+    pdfDrop.classList.add('has-file');
+
+    esconderAlerta();
+  };
+  reader.onerror = () => {
+    mostrarAlerta('erro', '❌ Não foi possível ler o PDF. Tente novamente.');
+    limparPDF();
+  };
+  reader.readAsDataURL(file);
+}
+
+inpPdf.addEventListener('change', () => {
+  const file = inpPdf.files && inpPdf.files[0];
+  if (file) lerPDF(file);
+});
+
+/* Remover PDF pelo botão "×" */
+pdfLimpar.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  limparPDF();
+});
+
+/* Drag & drop */
+['dragenter','dragover'].forEach(evt => {
+  pdfDrop.addEventListener(evt, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    pdfDrop.classList.add('dragover');
+  });
+});
+['dragleave','drop'].forEach(evt => {
+  pdfDrop.addEventListener(evt, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    pdfDrop.classList.remove('dragover');
+  });
+});
+pdfDrop.addEventListener('drop', (e) => {
+  const file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (file) lerPDF(file);
+});
+
+/* ============================================================
+   BOTÃO ENVIAR — só depende do Termo de Parceria
    ============================================================ */
 chkTermo.addEventListener('change', () => {
   btnEnviar.disabled = !chkTermo.checked;
@@ -690,7 +896,7 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault();
   esconderAlerta();
 
-  // Ponto de verificação obrigatório
+  // Termo obrigatório
   if (!chkTermo.checked){
     mostrarAlerta('erro', '⚠️ Deve aceitar os Termos de Parceria para submeter a solicitação.');
     return;
@@ -719,32 +925,39 @@ form.addEventListener('submit', async (e) => {
   const payload = {
     action:          'inscrever',
     nome:            inpNome.value.trim(),
-    organizacao:     document.getElementById('organizacao').value.trim(),
+    organizacao:     document.getElementById('organizacao').value.trim(),  // pode ir vazio
     telefone:        inpTel.value.trim(),
     email:           document.getElementById('email').value.trim().toLowerCase(),
     natureza_evento: document.getElementById('natureza_evento').value,
-    data_evento:     inpData.value,                                  // yyyy-mm-dd
-    duracao_evento:  inpInicio.value + ' - ' + inpFim.value,         // HH:MM - HH:MM
+    data_evento:     inpData.value,
+    duracao_evento:  inpInicio.value + ' - ' + inpFim.value,
     local_evento:    document.getElementById('local_evento').value.trim(),
     detalhes:        txtDetalhes.value.trim()
   };
 
+  // Só inclui o PDF no payload se foi anexado
+  if (pdfBase64) {
+    payload.pdf = pdfBase64;
+  }
+
   try {
     const resposta = await fetch(GAS_URL, {
       method: 'POST',
-      body: new URLSearchParams(payload)   // application/x-www-form-urlencoded (sem preflight)
+      body: new URLSearchParams(payload)
     });
 
     const dados = await resposta.json();
 
     if (dados.success){
-      mostrarAlerta('ok', '✅ ' + (dados.message || 'Parceria registada com sucesso!') +
-                         '<br>Entraremos em contacto brevemente.');
+      mostrarAlerta('ok',
+        '✅ ' + (dados.message || 'Parceria registada com sucesso!') +
+        '<br>Entraremos em contacto brevemente.');
 
       form.reset();
       contador.textContent = '0 / 3000 caracteres';
       contador.classList.remove('limite');
-      btnEnviar.disabled = true;           // volta a bloquear até novo aceite
+      limparPDF();
+      btnEnviar.disabled = true;
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -760,7 +973,7 @@ form.addEventListener('submit', async (e) => {
     btnEnviar.disabled = false;
   } finally {
     btnEnviar.textContent = textoOriginal;
-    if (chkTermo.checked) btnEnviar.disabled = false;
+    btnEnviar.disabled = !chkTermo.checked;
   }
 });
 </script>
