@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solicitação de Parceria | AGETRHA</title>
+<style>
+  :root{
+    --azul-900:#062a3d;
+    --azul-800:#0a2f44;
+    --azul-700:#0d4a73;
+    --azul-600:#1565a0;
+    --ciano-500:#06b6d4;
+    --ciano-400:#22d3ee;
+    --ciano-100:#e0f7fb;
+    --branco:#ffffff;
+    --cinza-100:#f4f8fb;
+    --cinza-300:#d7e3ec;
+    --cinza-600:#5b7285;
+    --texto:#0f2635;
+    --vermelho:#e11d48;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    color:var(--texto);
+    min-height:100vh;
+    padding-bottom:56px;
+    background:
+      radial-gradient(1200px 600px at 8% -12%, #e6f7fb 0%, transparent 60%),
+      radial-gradient(900px 500px at 102% 0%, #e8f1f9 0%, transparent 55%),
+      #f5f9fc;
+  }
+
+  /* ================= HERO ================= */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding:34px 22px 92px;
+    background:linear-gradient(120deg,var(--azul-800) 0%,var(--azul-700) 48%,var(--ciano-500) 125%);
+    color:#fff;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(34,211,238,.35),transparent 68%);
+    top:-260px;right:-140px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    width:340px;height:340px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.18);
+    bottom:-230px;left:-90px;
+  }
+  .hero-inner{
+    position:relative;z-index:2;
+    max-width:920px;margin:0 auto;
+    display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;
+  }
+
+  .logo-wrap{
+    display:flex;align-items:center;gap:14px;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.25);
+    padding:8px 20px 8px 10px;
+    border-radius:60px;
+    backdrop-filter:blur(6px);
+  }
+  /* ---- LOGOTIPO AGETRHA ---- */
+  .logo-mark{
+    width:48px;
+    height:48px;
+    flex:0 0 auto;
+    border-radius:50%;
+    object-fit:contain;
+    background:#ffffff;
+    padding:3px;
+    border:2px solid rgba(255,255,255,.55);
+    box-shadow:0 4px 12px rgba(0,0,0,.28);
+  }
+  .logo-text{display:flex;flex-direction:column;line-height:1.05;text-align:left}
+  .logo-text strong{font-size:1.12rem;letter-spacing:2.5px;font-weight:800}
+  .logo-text span{font-size:.63rem;letter-spacing:1.6px;text-transform:uppercase;opacity:.85}
+
+  .hero h1{
+    font-size:clamp(1.45rem,3.6vw,2.15rem);
+    letter-spacing:1.5px;
+    font-weight:800;
+    margin-top:8px;
+  }
+  .hero h1::after{
+    content:"";
+    display:block;
+    width:78px;height:4px;border-radius:4px;
+    margin:14px auto 0;
+    background:linear-gradient(90deg,var(--ciano-400),rgba(255,255,255,.15));
+  }
+  .hero p.subtitle{
+    max-width:700px;
+    font-size:.95rem;
+    line-height:1.65;
+    color:rgba(255,255,255,.92);
+  }
+
+  /* ================= CARD ================= */
+  .card{
+    position:relative;z-index:5;
+    max-width:920px;
+    margin:-62px auto 0;
+    background:var(--branco);
+    border-radius:22px;
+    border:1px solid #e3eef6;
+    box-shadow:0 26px 60px -28px rgba(10,47,68,.45), 0 4px 14px rgba(10,47,68,.06);
+    padding:38px 38px 34px;
+  }
+
+  .card-head{
+    display:flex;align-items:center;gap:12px;
+    padding-bottom:18px;margin-bottom:26px;
+    border-bottom:1px solid #eaf2f8;
+  }
+  .card-head .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:linear-gradient(135deg,var(--ciano-400),var(--azul-600));
+    box-shadow:0 0 0 5px rgba(6,182,212,.12);
+  }
+  .card-head h2{
+    font-size:1rem;font-weight:700;color:var(--azul-800);letter-spacing:.4px;
+  }
+  .card-head small{margin-left:auto;font-size:.74rem;color:var(--cinza-600);letter-spacing:.5px}
+
+  /* ================= FORM ================= */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 22px}
+  .full{grid-column:1 / -1}
+
+  .field label{
+    display:block;font-size:.84rem;font-weight:600;
+    color:var(--azul-800);margin-bottom:8px;letter-spacing:.2px;
+  }
+  .req{color:var(--vermelho);font-weight:700;margin-left:2px}
+
+  input[type=text],
+  input[type=tel],
+  input[type=email],
+  input[type=date],
+  input[type=time],
+  select,
+  textarea{
+    width:100%;
+    padding:13px 15px;
+    font-size:.94rem;
+    font-family:inherit;
+    color:var(--texto);
+    background:#fff;
+    border:1.6px solid var(--cinza-300);
+    border-radius:12px;
+    transition:border-color .18s, box-shadow .18s, background .18s;
+  }
+  input::placeholder, textarea::placeholder{color:#9fb2c1}
+
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--ciano-500);
+    box-shadow:0 0 0 4px rgba(6,182,212,.15);
+    background:#fbfeff;
+  }
+  input:invalid:not(:placeholder-shown),
+  select:invalid:not(:focus),
+  textarea:invalid:not(:placeholder-shown){
+    border-color:#f1b0be;
+  }
+
+  select{
+    appearance:none;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230d4a73' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    padding-right:42px;
+    cursor:pointer;
+  }
+
+  textarea{resize:vertical;min-height:150px;line-height:1.6}
+
+  .duracao-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .duracao-wrap .mini-label{
+    display:block;font-size:.72rem;font-weight:600;
+    color:var(--cinza-600);margin-bottom:6px;letter-spacing:.4px;text-transform:uppercase;
+  }
+
+  .counter{
+    display:block;text-align:right;
+    font-size:.73rem;color:var(--cinza-600);margin-top:7px;letter-spacing:.3px;
+  }
+  .counter.limite{color:var(--ciano-500);font-weight:700}
+
+  .hint{font-size:.74rem;color:var(--cinza-600);margin-top:7px;line-height:1.5}
+
+  /* ================= TERMO ================= */
+  .termo-box{
+    background:linear-gradient(180deg,#f3fbff 0%,#eaf6fd 100%);
+    border:1.5px solid #bfe7f3;
+    border-radius:16px;
+    padding:20px;
+    margin-top:6px;
+  }
+  .termo-check{
+    display:flex;gap:13px;align-items:flex-start;
+  }
+  .termo-check input[type=checkbox]{
+    appearance:none;
+    width:22px;height:22px;flex:0 0 auto;margin-top:2px;
+    border:2px solid var(--azul-600);
+    border-radius:6px;background:#fff;cursor:pointer;
+    transition:.18s;position:relative;
+  }
+  .termo-check input[type=checkbox]:checked{
+    background:linear-gradient(135deg,var(--azul-700),var(--ciano-500));
+    border-color:var(--ciano-500);
+  }
+  .termo-check input[type=checkbox]:checked::after{
+    content:"";
+    position:absolute;left:6px;top:2px;
+    width:6px;height:11px;
+    border:solid #fff;border-width:0 2.4px 2.4px 0;
+    transform:rotate(45deg);
+  }
+  .termo-check label{
+    font-size:.82rem;line-height:1.62;color:#26424f;cursor:pointer;
+  }
+  .termo-check label b{color:var(--azul-800)}
+
+  .btn-termo{
+    margin-top:14px;
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;
+    color:var(--azul-700);
+    border:1.6px solid var(--azul-600);
+    padding:10px 18px;border-radius:10px;
+    font-size:.8rem;font-weight:700;letter-spacing:.3px;
+    cursor:pointer;transition:.18s;font-family:inherit;
+  }
+  .btn-termo:hover{background:var(--azul-700);color:#fff;border-color:var(--azul-700)}
+  .btn-termo svg{width:15px;height:15px}
+
+  /* ================= BOTÃO ENVIAR ================= */
+  .actions{margin-top:28px}
+
+  .btn-enviar{
+    width:100%;
+    padding:17px;
+    border:none;border-radius:14px;
+    font-family:inherit;font-size:1rem;font-weight:800;letter-spacing:1px;
+    color:#fff;cursor:pointer;
+    background:linear-gradient(120deg,var(--azul-700) 0%,var(--azul-600) 45%,var(--ciano-500) 115%);
+    box-shadow:0 14px 28px -14px rgba(13,74,115,.85);
+    transition:transform .16s, box-shadow .16s, background .25s, opacity .2s;
+  }
+  .btn-enviar:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 18px 32px -14px rgba(6,182,212,.85)}
+  .btn-enviar:active:not(:disabled){transform:translateY(0)}
+  .btn-enviar:disabled{
+    background:#cfdde8;
+    color:#7d95a7;
+    box-shadow:none;
+    cursor:not-allowed;
+  }
+
+  /* ================= ALERTAS ================= */
+  .alerta{
+    display:none;
+    margin-top:20px;padding:14px 16px;border-radius:12px;
+    font-size:.86rem;line-height:1.6;font-weight:600;
+  }
+  .alerta.show{display:block}
+  .alerta.ok{background:#e7f9f4;border:1.5px solid #9fe3cd;color:#0b6b52}
+  .alerta.erro{background:#fdeef1;border:1.5px solid #f5b8c5;color:#a3132f}
+  .alerta.info{background:#eaf6fd;border:1.5px solid #bfe7f3;color:#0d4a73}
+
+  /* ================= FOOTER ================= */
+  .footer{
+    max-width:920px;margin:26px auto 0;padding:0 22px;
+    text-align:center;font-size:.74rem;color:#8ba0b0;letter-spacing:.4px;line-height:1.7;
+  }
+
+  /* ================= MODAL ================= */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:999;
+    display:none;
+    align-items:center;justify-content:center;
+    padding:22px;
+    background:rgba(6,42,61,.62);
+    backdrop-filter:blur(4px);
+  }
+  .modal-overlay.open{display:flex;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  .modal{
+    width:100%;max-width:680px;max-height:86vh;
+    display:flex;flex-direction:column;
+    background:#fff;border-radius:18px;overflow:hidden;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.55);
+    animation:up .25s ease;
+  }
+  @keyframes up{from{transform:translateY(18px);opacity:.4}to{transform:translateY(0);opacity:1}}
+
+  .modal-head{
+    display:flex;align-items:center;gap:14px;
+    padding:20px 22px;
+    background:linear-gradient(120deg,var(--azul-800),var(--azul-700) 60%,var(--ciano-500) 140%);
+    color:#fff;
+  }
+  .modal-head h2{font-size:1rem;letter-spacing:1.6px;font-weight:800}
+  .modal-close-x{
+    margin-left:auto;background:transparent;border:none;color:#fff;
+    font-size:1.7rem;line-height:1;cursor:pointer;opacity:.85;transition:.18s;
+    padding:0 4px;font-family:inherit;
+  }
+  .modal-close-x:hover{opacity:1;transform:scale(1.12)}
+
+  .modal-body{
+    padding:24px 26px;
+    overflow-y:auto;
+    font-size:.88rem;line-height:1.78;color:#2c4655;
+  }
+  .modal-body p{margin-bottom:16px;text-align:justify}
+  .modal-body p:last-child{margin-bottom:0}
+
+  .modal-foot{
+    padding:16px 22px;
+    border-top:1px solid #eaf2f8;
+    display:flex;justify-content:flex-end;
+    background:#fafdff;
+  }
+  .btn-fechar{
+    font-family:inherit;
+    padding:11px 30px;border-radius:11px;border:none;
+    background:linear-gradient(120deg,var(--azul-700),var(--ciano-500));
+    color:#fff;font-weight:700;font-size:.85rem;letter-spacing:.6px;
+    cursor:pointer;transition:.18s;
+  }
+  .btn-fechar:hover{filter:brightness(1.08);transform:translateY(-1px)}
+
+  /* ================= RESPONSIVO ================= */
+  @media (max-width:700px){
+    .card{padding:26px 20px 24px;border-radius:18px;margin-top:-52px}
+    .grid{grid-template-columns:1fr;gap:18px}
+    .duracao-wrap{grid-template-columns:1fr 1fr}
+    .hero{padding:26px 18px 78px}
+    .logo-mark{width:42px;height:42px}
+    .logo-text strong{font-size:.98rem}
+    .modal-body{padding:20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     CABEÇALHO / HERO
+     Logotipo oficial da AGETRHA
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-inner">
+
+    <div class="logo-wrap">
+      <img src="https://i.postimg.cc/DyKZTbYq/Logotipo.jpg"
+           alt="Logotipo AGETRHA"
+           class="logo-mark">
+      <div class="logo-text">
+        <strong>AGETRHA</strong>
+        <span>Parcerias Institucionais</span>
+      </div>
+    </div>
+
+    <h1>SOLICITAÇÃO DE PARCERIA</h1>
+    <p class="subtitle">
+      A sua parceria com a AGETRHA, pode transformar ideias em iniciativas concretas e contribuir
+      para a construção de um futuro profissional mais capacitado, colaborativo e sustentável.
+    </p>
+  </div>
+</header>
+
+<!-- ============================================================
+     FORMULÁRIO
+     ============================================================ -->
+<main class="card">
+
+  <div class="card-head">
+    <span class="dot"></span>
+    <h2>Dados da Solicitação</h2>
+    <small>Os campos com <span class="req">*</span> são obrigatórios</small>
+  </div>
+
+  <form id="formParceria" autocomplete="on">
+    <div class="grid">
+
+      <!-- 1. Primeiro e Último Nome -->
+      <div class="field">
+        <label for="nome">Primeiro e Último Nome <span class="req">*</span></label>
+        <input type="text" id="nome" name="nome" placeholder="Ex.: Ana Silva"
+               required maxlength="80"
+               pattern="[A-Za-zÀ-ÖØ-öø-ÿ'´`\- ]{3,80}"
+               title="Apenas letras e espaços (mínimo 3 caracteres).">
+      </div>
+
+      <!-- 2. Organização -->
+      <div class="field">
+        <label for="organizacao">Organização <span class="req">*</span></label>
+        <input type="text" id="organizacao" name="organizacao"
+               placeholder="Nome da instituição / empresa" required maxlength="120">
+      </div>
+
+      <!-- 3. Tel/Whatsapp -->
+      <div class="field">
+        <label for="telefone">Tel/Whatsapp <span class="req">*</span></label>
+        <input type="tel" id="telefone" name="telefone" placeholder="Ex.: 923000000"
+               required inputmode="numeric" maxlength="15"
+               pattern="[0-9]{9,15}"
+               title="Introduza apenas números (9 a 15 dígitos).">
+      </div>
+
+      <!-- 4. E-mail -->
+      <div class="field">
+        <label for="email">E-mail <span class="req">*</span></label>
+        <input type="email" id="email" name="email"
+               placeholder="nome@instituicao.co.ao" required maxlength="120">
+      </div>
+
+      <!-- 5. Natureza do Evento -->
+      <div class="field full">
+        <label for="natureza_evento">Natureza do Evento <span class="req">*</span></label>
+        <select id="natureza_evento" name="natureza_evento" required>
+          <option value="" disabled selected>— Selecione a natureza do evento —</option>
+          <option value="Formação">Formação</option>
+          <option value="Capacitação profissional">Capacitação profissional</option>
+          <option value="Treinamento">Treinamento</option>
+          <option value="Fórum">Fórum</option>
+          <option value="Conferência">Conferência</option>
+          <option value="Palestra">Palestra</option>
+          <option value="Workshops">Workshops</option>
+          <option value="Webinars">Webinars</option>
+          <option value="Recrutamento">Recrutamento</option>
+          <option value="selecção">selecção</option>
+          <option value="Recrutamento e Selecção">Recrutamento e Selecção</option>
+          <option value="Parceria institucional">Parceria institucional</option>
+          <option value="Parceria empresarial">Parceria empresarial</option>
+          <option value="Investigação e produção técnico-científica">Investigação e produção técnico-científica</option>
+          <option value="Consultoria">Consultoria</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+
+      <!-- 6. Data do Evento -->
+      <div class="field">
+        <label for="data_evento">Data do Evento <span class="req">*</span></label>
+        <input type="date" id="data_evento" name="data_evento" required>
+      </div>
+
+      <!-- 7. Duração do Evento -->
+      <div class="field">
+        <label>Duração do Evento <span class="req">*</span></label>
+        <div class="duracao-wrap">
+          <div>
+            <span class="mini-label">Início</span>
+            <input type="time" id="hora_inicio" name="hora_inicio" required>
+          </div>
+          <div>
+            <span class="mini-label">Fim</span>
+            <input type="time" id="hora_fim" name="hora_fim" required>
+          </div>
+        </div>
+        <span class="hint">Apenas horário (HH:MM).</span>
+      </div>
+
+      <!-- 8. Local do Evento -->
+      <div class="field full">
+        <label for="local_evento">Local do Evento <span class="req">*</span></label>
+        <input type="text" id="local_evento" name="local_evento"
+               placeholder="Ex.: Auditório da AGETRHA, Luanda" required maxlength="180">
+      </div>
+
+      <!-- 9. Outros detalhes -->
+      <div class="field full">
+        <label for="detalhes">Outros detalhes</label>
+        <textarea id="detalhes" name="detalhes" maxlength="3000"
+                  placeholder="Descreva o contexto, objectivos, público-alvo, número estimado de participantes e as condições de participação da AGETRHA..."></textarea>
+        <span class="counter" id="contador">0 / 3000 caracteres</span>
+      </div>
+
+    </div>
+
+    <!-- 10. Termo de parceria + ponto de verificação -->
+    <div class="termo-box">
+      <div class="termo-check">
+        <input type="checkbox" id="aceite_termo" name="aceite_termo" required>
+        <label for="aceite_termo">
+          <b>TERMOS DE PARCERIA:</b> Declaro, para os devidos efeitos, que a actividade por mim
+          organizada não possui qualquer finalidade financeira ou lucrativa. Declaro, igualmente,
+          que não efectuei qualquer pagamento à AGETRHA, a título de aquisição, contratação ou
+          prestação de qualquer serviço relacionado com a referida actividade.
+        </label>
+      </div>
+
+      <button type="button" class="btn-termo" id="btnAbrirTermo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="8" y1="13" x2="16" y2="13"/>
+          <line x1="8" y1="17" x2="13" y2="17"/>
+        </svg>
+        Ler o Termo de Parceria completo
+      </button>
+    </div>
+
+    <!-- 11. Botão de envio -->
+    <div class="actions">
+      <button type="submit" class="btn-enviar" id="btnEnviar" disabled>
+        ENVIAR SOLICITAÇÃO
+      </button>
+    </div>
+
+    <div class="alerta" id="alerta" role="status" aria-live="polite"></div>
+  </form>
+</main>
+
+<footer class="footer">
+  AGETRHA — Associação de Gestores e Técnicos de Recursos Humanos de Angola<br>
+  © <span id="anoAtual"></span> AGETRHA. Todos os direitos reservados.
+</footer>
+
+<!-- ============================================================
+     MODAL — TERMO DE PARCERIA
+     ============================================================ -->
+<div class="modal-overlay" id="modalTermo" role="dialog" aria-modal="true"
+     aria-labelledby="modalTitulo" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitulo">TERMO DE PARCERIA</h2>
+      <button type="button" class="modal-close-x" data-fechar aria-label="Fechar">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p>
+        As partes declaram e acordam que a presente parceria é estabelecida sem finalidade
+        financeira ou lucrativa para qualquer das partes.
+      </p>
+      <p>
+        Declaram, igualmente, que a actividade objecto da presente parceria não implica a
+        aquisição ou contratação de serviços da AGETRHA pelo organizador, não tendo sido
+        efectuado qualquer pagamento à AGETRHA como contrapartida pela prestação de serviços
+        relacionados com a referida actividade, devendo o solicitante proporcionar apenas as
+        condições necessárias à participação dos membros da AGETRHA envolvidos na actividade.
+      </p>
+      <p>
+        A presente parceria tem carácter institucional e de cooperação, visando exclusivamente
+        a colaboração entre as partes, nos termos e condições estabelecidos no presente Termo
+        de Parceria.
+      </p>
+    </div>
+
+    <div class="modal-foot">
+      <button type="button" class="btn-fechar" data-fechar>Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO — URL DO GOOGLE APPS SCRIPT
+   ============================================================ */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxxK41Ir_ubt6WCzXAhKzwZrAkpoxr-5KjWjkqutGOnupWZRY7yApx1D79YaPXCMjYTBA/exec';
+
+/* ============================================================
+   REFERÊNCIAS
+   ============================================================ */
+const form        = document.getElementById('formParceria');
+const inpNome     = document.getElementById('nome');
+const inpTel      = document.getElementById('telefone');
+const inpInicio   = document.getElementById('hora_inicio');
+const inpFim      = document.getElementById('hora_fim');
+const inpData     = document.getElementById('data_evento');
+const txtDetalhes = document.getElementById('detalhes');
+const contador    = document.getElementById('contador');
+const chkTermo    = document.getElementById('aceite_termo');
+const btnEnviar   = document.getElementById('btnEnviar');
+const alerta      = document.getElementById('alerta');
+
+const modal       = document.getElementById('modalTermo');
+const btnAbrir    = document.getElementById('btnAbrirTermo');
+
+/* ============================================================
+   ANO NO RODAPÉ
+   ============================================================ */
+document.getElementById('anoAtual').textContent = new Date().getFullYear();
+
+/* ============================================================
+   DATA MÍNIMA = HOJE
+   ============================================================ */
+(function definirDataMinima(){
+  const hoje = new Date();
+  const iso = hoje.toISOString().split('T')[0];
+  inpData.min = iso;
+})();
+
+/* ============================================================
+   MÁSCARAS / RESTRIÇÕES DE ENTRADA
+   ============================================================ */
+
+/* Nome — apenas letras, espaços, hífen e apóstrofos */
+inpNome.addEventListener('input', () => {
+  inpNome.value = inpNome.value
+    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'´`\-\s]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/^\s+/, '');
+});
+
+/* Telefone — apenas números */
+inpTel.addEventListener('input', () => {
+  inpTel.value = inpTel.value.replace(/\D/g, '').slice(0, 15);
+});
+inpTel.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const texto = (e.clipboardData || window.clipboardData).getData('text');
+  inpTel.value = texto.replace(/\D/g, '').slice(0, 15);
+});
+
+/* Contador de caracteres do campo "Outros detalhes" */
+txtDetalhes.addEventListener('input', () => {
+  const n = txtDetalhes.value.length;
+  contador.textContent = n + ' / 3000 caracteres';
+  contador.classList.toggle('limite', n >= 2900);
+});
+
+/* ============================================================
+   BOTÃO ENVIAR — SÓ ACTIVO COM O PONTO DE VERIFICAÇÃO
+   ============================================================ */
+chkTermo.addEventListener('change', () => {
+  btnEnviar.disabled = !chkTermo.checked;
+  if (chkTermo.checked) esconderAlerta();
+});
+
+/* ============================================================
+   MODAL — TERMO DE PARCERIA
+   ============================================================ */
+function abrirModal(){
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function fecharModal(){
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+btnAbrir.addEventListener('click', abrirModal);
+modal.querySelectorAll('[data-fechar]').forEach(el => el.addEventListener('click', fecharModal));
+modal.addEventListener('click', (e) => { if (e.target === modal) fecharModal(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('open')) fecharModal();
+});
+
+/* ============================================================
+   ALERTAS
+   ============================================================ */
+function mostrarAlerta(tipo, msg){
+  alerta.className = 'alerta show ' + tipo;
+  alerta.innerHTML = msg;
+}
+function esconderAlerta(){
+  alerta.className = 'alerta';
+  alerta.innerHTML = '';
+}
+
+/* ============================================================
+   VALIDAÇÃO PERSONALIZADA
+   ============================================================ */
+function validarDuracao(){
+  if (!inpInicio.value || !inpFim.value) return false;
+  return inpFim.value > inpInicio.value;
+}
+
+/* ============================================================
+   SUBMISSÃO
+   ============================================================ */
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  esconderAlerta();
+
+  // Ponto de verificação obrigatório
+  if (!chkTermo.checked){
+    mostrarAlerta('erro', '⚠️ Deve aceitar os Termos de Parceria para submeter a solicitação.');
+    return;
+  }
+
+  // Validação nativa (required, pattern, type)
+  if (!form.checkValidity()){
+    form.reportValidity();
+    mostrarAlerta('erro', '⚠️ Verifique os campos assinalados antes de continuar.');
+    return;
+  }
+
+  // Duração coerente
+  if (!validarDuracao()){
+    mostrarAlerta('erro', '⚠️ A hora de fim deve ser posterior à hora de início.');
+    inpFim.focus();
+    return;
+  }
+
+  // Estado de carregamento
+  const textoOriginal = btnEnviar.textContent;
+  btnEnviar.disabled = true;
+  btnEnviar.textContent = 'A ENVIAR...';
+  mostrarAlerta('info', '⏳ A processar a sua solicitação. Aguarde, por favor...');
+
+  const payload = {
+    action:          'inscrever',
+    nome:            inpNome.value.trim(),
+    organizacao:     document.getElementById('organizacao').value.trim(),
+    telefone:        inpTel.value.trim(),
+    email:           document.getElementById('email').value.trim().toLowerCase(),
+    natureza_evento: document.getElementById('natureza_evento').value,
+    data_evento:     inpData.value,                                  // yyyy-mm-dd
+    duracao_evento:  inpInicio.value + ' - ' + inpFim.value,         // HH:MM - HH:MM
+    local_evento:    document.getElementById('local_evento').value.trim(),
+    detalhes:        txtDetalhes.value.trim()
+  };
+
+  try {
+    const resposta = await fetch(GAS_URL, {
+      method: 'POST',
+      body: new URLSearchParams(payload)   // application/x-www-form-urlencoded (sem preflight)
+    });
+
+    const dados = await resposta.json();
+
+    if (dados.success){
+      mostrarAlerta('ok', '✅ ' + (dados.message || 'Parceria registada com sucesso!') +
+                         '<br>Entraremos em contacto brevemente.');
+
+      form.reset();
+      contador.textContent = '0 / 3000 caracteres';
+      contador.classList.remove('limite');
+      btnEnviar.disabled = true;           // volta a bloquear até novo aceite
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      mostrarAlerta('erro', '❌ ' + (dados.message || 'Não foi possível registar a solicitação.'));
+      btnEnviar.disabled = false;
+    }
+
+  } catch (erro) {
+    console.error('Erro no envio:', erro);
+    mostrarAlerta('erro',
+      '❌ Ocorreu um erro de comunicação com o servidor.<br>' +
+      'Verifique a sua ligação à internet e tente novamente.');
+    btnEnviar.disabled = false;
+  } finally {
+    btnEnviar.textContent = textoOriginal;
+    if (chkTermo.checked) btnEnviar.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
