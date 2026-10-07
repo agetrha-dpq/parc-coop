@@ -187,7 +187,6 @@ tbody tr:last-child td{border-bottom:none}
     <div class="field">
       <label>Perfil de Utilizador</label>
       <select id="perfil">
-        <!-- Opções fixas no HTML — não dependem de JavaScript -->
         <option value="Director Geral">Director Geral</option>
         <option value="Subdirector Pedagógico">Subdirector Pedagógico</option>
         <option value="Subdirector Administrativo">Subdirector Administrativo</option>
@@ -212,13 +211,8 @@ tbody tr:last-child td{border-bottom:none}
       <input id="pass" type="password" placeholder="••••••••" value="123456">
     </div>
     <button class="btn full" onclick="entrar()">🔓 Entrar no Sistema</button>
-    <button class="btn ghost full" onclick="resetSistema()" style="margin-top:8px">
-      🗑️ Limpar dados guardados e recomeçar
-    </button>
-    <p class="hint">
-      Não é necessário registar conta — escolhe um perfil e entra com qualquer palavra-passe.<br>
-      Os dados são simulados e guardados no teu navegador.
-    </p>
+    <button class="btn ghost full" onclick="resetSistema()" style="margin-top:8px">🗑️ Limpar dados guardados e recomeçar</button>
+    <p class="hint">Não é necessário registar conta — escolhe um perfil e entra com qualquer palavra-passe.<br>Os dados são simulados e guardados no teu navegador.</p>
   </div>
 </div>
 
@@ -227,10 +221,7 @@ tbody tr:last-child td{border-bottom:none}
   <aside id="sidebar">
     <div class="side-head">
       <div class="mark">GW</div>
-      <div>
-        <b>GEST-WILDAKA</b>
-        <small>Gestão Escolar</small>
-      </div>
+      <div><b>GEST-WILDAKA</b><small>Gestão Escolar</small></div>
     </div>
     <nav id="nav"></nav>
     <div class="side-foot">
@@ -249,10 +240,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="spacer"></div>
       <div class="user-chip">
         <div class="av" id="uav">W</div>
-        <div>
-          <b id="uname">Wilda Kambala</b>
-          <small id="urole">Director Geral</small>
-        </div>
+        <div><b id="uname">Wilda Kambala</b><small id="urole">Director Geral</small></div>
       </div>
     </header>
     <div id="view"></div>
@@ -263,15 +251,12 @@ tbody tr:last-child td{border-bottom:none}
 /* =========================================================
    1. BASE DE DADOS SIMULADA
    ========================================================= */
-const LS = 'gestwildaka_v2';       // chave nova: ignora automaticamente cache antiga (_v1)
-const LS_VERSION = 2;
-const CHAVES_OBRIGATORIAS = [
-  'alunos','professores','funcionarios','pagamentos',
-  'livros','patrimonio','viaturas','ocorrencias',
-  'avarias','auditoria','receitaMes'
-];
+const LS = 'gestwildaka_v3';
+const LS_VERSION = 3;
+const CHAVES = ['alunos','professores','funcionarios','pagamentos','livros',
+  'patrimonio','viaturas','ocorrencias','avarias','auditoria','receitaMes'];
 
-const KZ = n => new Intl.NumberFormat('pt-PT').format(Math.round(n)) + ' Kz';
+const KZ  = n => new Intl.NumberFormat('pt-PT').format(Math.round(n)) + ' Kz';
 const rnd = a => a[Math.floor(Math.random()*a.length)];
 const ri  = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const pad = n => String(n).padStart(2,'0');
@@ -285,22 +270,19 @@ const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov'
 function gerarDados(){
   const alunos = [];
   for(let i=1;i<=148;i++){
-    const nome = rnd(NOMES)+' '+rnd(SOBRES)+' '+rnd(SOBRES);
-    const divida = Math.random()<0.27 ? ri(1,6)*15000 : 0;
     alunos.push({
       id:'AL'+String(1000+i),
-      nome,
+      nome: rnd(NOMES)+' '+rnd(SOBRES)+' '+rnd(SOBRES),
       classe: rnd(CLASSES),
       turma: rnd(['A','B','C']),
       genero: rnd(['M','F']),
       estado: Math.random()<0.9 ? 'Activo' : 'Inactivo',
-      divida,
+      divida: Math.random()<0.27 ? ri(1,6)*15000 : 0,
       media: +(ri(68,195)/10).toFixed(1),
       freq: ri(76,100),
       encarregado: rnd(NOMES)+' '+rnd(SOBRES),
       telefone: '+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999),
-      nasc: pad(ri(1,28))+'/'+pad(ri(1,12))+'/'+ri(2004,2019),
-      tipo:'Matrícula'
+      nasc: pad(ri(1,28))+'/'+pad(ri(1,12))+'/'+ri(2004,2019)
     });
   }
 
@@ -311,7 +293,7 @@ function gerarDados(){
       nome: rnd(NOMES)+' '+rnd(SOBRES)+' '+rnd(SOBRES),
       disciplina: rnd(DISCIPLINAS),
       classes: rnd(CLASSES)+' / '+rnd(CLASSES),
-      telefone:'+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999),
+      telefone: '+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999),
       estado: Math.random()<0.94?'Activo':'Licença',
       presenca: ri(88,100),
       avaliacao: +(ri(30,50)/10).toFixed(1)
@@ -340,24 +322,20 @@ function gerarDados(){
     pagamentos.push({
       id:'PG'+String(5000+i),
       aluno: a.nome, alunoId: a.id,
-      tipo,
-      valor: tipo==='Propina'? ri(1,3)*15000 : rnd([5000,7500,10000,12000,15000,25000]),
-      metodo: rnd(metodos),
-      data: pad(ri(1,28))+'/'+pad(ri(1,10))+'/'+2025,
-      mes: ri(0,9)
+      tipo, metodo: rnd(metodos),
+      valor: tipo==='Propina' ? ri(1,3)*15000 : rnd([5000,7500,10000,12000,15000,25000]),
+      data: pad(ri(1,28))+'/'+pad(ri(1,10))+'/'+2025
     });
   }
 
   const livros = [];
-  const titulos = ['Matemática 10ª Classe','Português e Literatura','Física Experimental','Química Orgânica','História de Angola','Geografia Geral','Inglês Básico','Biologia Celular','Filosofia Moderna','Dicionário de Língua Portuguesa','Contos Africanos','Atlas Mundial'];
+  const titulos = ['Matemática 10ª Classe','Português e Literatura','Física Experimental','Química Orgânica','História de Angola','Geografia Geral','Inglês Básico','Biologia Celular','Filosofia Moderna','Dicionário de Português','Contos Africanos','Atlas Mundial'];
   for(let i=1;i<=42;i++){
     livros.push({
-      id:'LV'+String(700+i),
-      titulo: rnd(titulos),
+      id:'LV'+String(700+i), titulo: rnd(titulos),
       autor: rnd(NOMES)+' '+rnd(SOBRES),
       categoria: rnd(['Didáctico','Literatura','Ciências','Referência','História']),
-      exemplares: ri(2,25),
-      disponiveis: ri(0,12),
+      exemplares: ri(2,25), disponiveis: ri(0,12),
       estado: rnd(['Bom','Razoável','Danificado'])
     });
   }
@@ -366,8 +344,7 @@ function gerarDados(){
   const bens = ['Computador Desktop','Projector Multimédia','Cadeira Escolar','Mesa de Professor','Quadro Branco','Microscópio','Impressora','Ar Condicionado','Gerador','Router de Rede','Secretária','Armário Metálico'];
   for(let i=1;i<=56;i++){
     patrimonio.push({
-      id:'PT'+String(900+i),
-      bem: rnd(bens),
+      id:'PT'+String(900+i), bem: rnd(bens),
       categoria: rnd(['Informática','Mobiliário','Laboratório','Didáctico','Infra-estrutura']),
       local: rnd(['Sala 1','Sala 5','Laboratório','Biblioteca','Secretaria','Direcção','Sala de Professores']),
       estado: rnd(['Bom','Razoável','Necessita Reparação']),
@@ -410,33 +387,21 @@ function gerarDados(){
     });
   }
 
-  const receitaMes = MESES.map((m)=>({label:m, value: ri(1800,4200)*1000}));
+  const receitaMes = MESES.map(m=>({label:m, value: ri(1800,4200)*1000}));
 
-  return {alunos, professores, funcionarios, pagamentos, livros, patrimonio, viaturas, ocorrencias, avarias, auditoria, receitaMes};
+  return {alunos, professores, funcionarios, pagamentos, livros, patrimonio,
+          viaturas, ocorrencias, avarias, auditoria, receitaMes};
 }
 
-/* ---------- Carregamento à prova de falhas ---------- */
 function carregarDB(){
   try{
     const raw = localStorage.getItem(LS);
     if(!raw) return gerarDados();
-
-    const parsed = JSON.parse(raw);
-    const valido =
-      parsed && typeof parsed === 'object' &&
-      parsed.__v === LS_VERSION &&
-      CHAVES_OBRIGATORIAS.every(k => Array.isArray(parsed[k])) &&
-      parsed.alunos.length > 0;
-
-    if(!valido){
-      console.warn('Dados guardados inválidos/desactualizados — a regenerar.');
-      return gerarDados();
-    }
-    return parsed;
-  }catch(err){
-    console.warn('Falha ao ler localStorage — a regenerar.', err);
-    return gerarDados();
-  }
+    const p = JSON.parse(raw);
+    const ok = p && typeof p==='object' && p.__v===LS_VERSION &&
+               CHAVES.every(k=>Array.isArray(p[k])) && p.alunos.length>0;
+    return ok ? p : gerarDados();
+  }catch(e){ return gerarDados(); }
 }
 
 let DB = carregarDB();
@@ -444,10 +409,7 @@ DB.__v = LS_VERSION;
 persistir();
 
 function persistir(){
-  try{
-    DB.__v = LS_VERSION;
-    localStorage.setItem(LS, JSON.stringify(DB));
-  }catch(e){ /* modo privado ou quota excedida — segue em memória */ }
+  try{ DB.__v = LS_VERSION; localStorage.setItem(LS, JSON.stringify(DB)); }catch(e){}
 }
 
 /* =========================================================
@@ -490,6 +452,7 @@ const MODULOS = [
 ];
 
 let estado = { perfil:'Director Geral', nome:'Wilda Kambala', view:'painel', chips:{} };
+const el = id => document.getElementById(id);
 
 function temAcesso(id){
   const p = PERFIS[estado.perfil] || [];
@@ -499,57 +462,71 @@ function temAcesso(id){
 /* =========================================================
    3. HELPERS DE INTERFACE
    ========================================================= */
-const el = id => document.getElementById(id);
-
-function toast(msg, ic='✅'){
+function toast(msg, ic){
+  ic = ic || '✅';
   const t = document.createElement('div');
-  t.className='toast'; t.innerHTML = `<span>${ic}</span><span>${msg}</span>`;
+  t.className = 'toast';
+  t.innerHTML = '<span>' + ic + '</span><span>' + msg + '</span>';
   document.body.appendChild(t);
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='.4s'; setTimeout(()=>t.remove(),400); }, 2600);
+  setTimeout(function(){
+    t.style.opacity = '0'; t.style.transition = '.4s';
+    setTimeout(function(){ t.remove(); }, 400);
+  }, 2600);
 }
 
-function kpi(lbl,val,sub,cls='b',ic='📌'){
-  return `<div class="kpi ${cls}">
-    <div class="ic">${ic}</div>
-    <div class="lbl">${lbl}</div>
-    <div class="val">${val}</div>
-    <div class="sub">${sub||''}</div>
-  </div>`;
+function kpi(lbl, val, sub, cls, ic){
+  cls = cls || 'b'; ic = ic || '📌';
+  return '<div class="kpi ' + cls + '">' +
+    '<div class="ic">' + ic + '</div>' +
+    '<div class="lbl">' + lbl + '</div>' +
+    '<div class="val">' + val + '</div>' +
+    '<div class="sub">' + (sub || '') + '</div>' +
+    '</div>';
 }
 
 function tbl(id, cols, rows){
-  return `<div class="tbl-wrap"><table id="${id}">
-    <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
-  </table></div>`;
+  let head = '';
+  for(let i=0;i<cols.length;i++) head += '<th>' + cols[i] + '</th>';
+  let body = '';
+  for(let i=0;i<rows.length;i++){
+    body += '<tr>';
+    for(let j=0;j<rows[i].length;j++) body += '<td>' + rows[i][j] + '</td>';
+    body += '</tr>';
+  }
+  return '<div class="tbl-wrap"><table id="' + id + '">' +
+         '<thead><tr>' + head + '</tr></thead>' +
+         '<tbody>' + body + '</tbody></table></div>';
 }
 
-function busca(id, ph='Pesquisar registos...'){
-  return `<input class="search" data-filter="${id}" placeholder="🔍 ${ph}">`;
+function busca(id, ph){
+  ph = ph || 'Pesquisar registos...';
+  return '<input class="search" data-filter="' + id + '" placeholder="🔍 ' + ph + '">';
 }
 
 function barras(dados){
-  const max = Math.max(...dados.map(d=>d.value)) || 1;
-  return `<div class="bars">${dados.map(d=>`
-    <div class="bar-row">
-      <span>${d.label}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${(d.value/max*100).toFixed(1)}%"></div></div>
-      <span class="bar-value">${KZ(d.value)}</span>
-    </div>`).join('')}</div>`;
+  const max = Math.max.apply(null, dados.map(d=>d.value)) || 1;
+  let h = '<div class="bars">';
+  for(let i=0;i<dados.length;i++){
+    const d = dados[i];
+    const pct = (d.value/max*100).toFixed(1);
+    h += '<div class="bar-row">' +
+           '<span>' + d.label + '</span>' +
+           '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+           '<span class="bar-value">' + KZ(d.value) + '</span>' +
+         '</div>';
+  }
+  return h + '</div>';
 }
 
 function donut(p, legenda){
-  return `<div class="donut" style="--p:${p}"><div class="in"><b>${p}%</b><small>${legenda}</small></div></div>`;
+  return '<div class="donut" style="--p:' + p + '"><div class="in"><b>' + p + '%</b><small>' + legenda + '</small></div></div>';
 }
 
-function card(titulo, sub, corpo, extra=''){
-  return `<div class="card">
-    <div class="card-head">
-      <div><h3>${titulo}</h3>${sub?`<div class="sub" style="margin:0">${sub}</div>`:''}</div>
-      ${extra}
-    </div>
-    ${corpo}
-  </div>`;
+function card(titulo, sub, corpo){
+  return '<div class="card">' +
+    '<div class="card-head"><div><h3>' + titulo + '</h3>' +
+    (sub ? '<div class="sub" style="margin:0">' + sub + '</div>' : '') +
+    '</div></div>' + corpo + '</div>';
 }
 
 function selo(txt){
@@ -557,7 +534,7 @@ function selo(txt){
              'Inactivo':'dg','Crítica':'dg','Alta':'dg','Necessita Reparação':'dg','Danificado':'dg','Pendente':'dg',
              'Manutenção':'warn','Férias':'warn','Licença':'warn','Razoável':'warn','Em curso':'warn','Encaminhado':'warn',
              'Média':'warn','Baixa':'info'};
-  return `<span class="tag ${m[txt]||'info'}">${txt}</span>`;
+  return '<span class="tag ' + (m[txt] || 'info') + '">' + txt + '</span>';
 }
 
 /* =========================================================
@@ -565,6 +542,7 @@ function selo(txt){
    ========================================================= */
 const VIEWS = {};
 
+/* ---------- 1. PAINEL EXECUTIVO ---------- */
 VIEWS.painel = function(){
   const total = DB.alunos.length;
   const activos = DB.alunos.filter(a=>a.estado==='Activo').length;
@@ -575,312 +553,342 @@ VIEWS.painel = function(){
   const freqMedia = Math.round(DB.alunos.reduce((s,a)=>s+a.freq,0)/total);
   const aprovacao = Math.round(DB.alunos.filter(a=>a.media>=10).length/total*100);
   const profActivos = DB.professores.filter(p=>p.estado==='Activo').length;
+  const nDevedores = DB.alunos.filter(a=>a.divida>0).length;
+  const nAvarias = DB.avarias.filter(a=>a.estado!=='Concluído').length;
+  const nLivrosEsg = DB.livros.filter(l=>l.disponiveis===0).length;
+  const nViatManut = DB.viaturas.filter(v=>v.estado!=='Operacional').length;
 
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Alunos Matriculados', total, `${activos} activos · ${inactivos} inactivos`,'b','🎓')}
-    ${kpi('Receita Diária', KZ(receitaDia), '<span class="up">▲ 8,4%</span> face a ontem','g','💵')}
-    ${kpi('Receita Mensal', KZ(receitaTotal), '<span class="up">▲ 12,1%</span> face ao mês anterior','g','📈')}
-    ${kpi('Valores em Dívida', KZ(divida), `${DB.alunos.filter(a=>a.divida>0).length} alunos devedores`,'r','⚠️')}
-  </div>
+  let html = '';
+  html += '<div class="grid g4" style="margin-bottom:16px">';
+  html += kpi('Alunos Matriculados', total, activos + ' activos · ' + inactivos + ' inactivos','b','🎓');
+  html += kpi('Receita Diária', KZ(receitaDia), '<span class="up">▲ 8,4%</span> face a ontem','g','💵');
+  html += kpi('Receita Mensal', KZ(receitaTotal), '<span class="up">▲ 12,1%</span> face ao mês anterior','g','📈');
+  html += kpi('Valores em Dívida', KZ(divida), nDevedores + ' alunos devedores','r','⚠️');
+  html += '</div>';
 
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Taxa de Aprovação', aprovacao+'%', 'Média geral '+ (DB.alunos.reduce((s,a)=>s+a.media,0)/total).toFixed(1)+' valores','b','🏆')}
-    ${kpi('Frequência Escolar', freqMedia+'%', 'Assiduidade média global','b','📅')}
-    ${kpi('Professores', profActivos+'/'+DB.professores.length, 'Docentes em actividade','b','👨‍🏫')}
-    ${kpi('Colaboradores', DB.funcionarios.length, 'Pessoal administrativo e auxiliar','b','👥')}
-  </div>
+  html += '<div class="grid g4" style="margin-bottom:16px">';
+  html += kpi('Taxa de Aprovação', aprovacao + '%', 'Média geral ' + (DB.alunos.reduce((s,a)=>s+a.media,0)/total).toFixed(1) + ' valores','b','🏆');
+  html += kpi('Frequência Escolar', freqMedia + '%', 'Assiduidade média global','b','📅');
+  html += kpi('Professores', profActivos + '/' + DB.professores.length, 'Docentes em actividade','b','👨‍🏫');
+  html += kpi('Colaboradores', DB.funcionarios.length, 'Pessoal administrativo e auxiliar','b','👥');
+  html += '</div>';
 
-  <div class="grid g3" style="margin-bottom:16px">
-    ${card('Receita Mensal (2025)','Evolução das receitas por mês', barras(DB.receitaMes))}
-    ${card('Aproveitamento Global','Distribuição dos alunos por desempenho',
-      donut(aprovacao,'Aprovação') +
-      `<div class="legend">
-        <span><i class="dot" style="background:#16a34a"></i> Aprovados — ${DB.alunos.filter(a=>a.media>=10).length} alunos</span>
-        <span><i class="dot" style="background:#dc2626"></i> Reprovados — ${DB.alunos.filter(a=>a.media<10).length} alunos</span>
-        <span><i class="dot" style="background:#e8eef6"></i> Média geral: ${(DB.alunos.reduce((s,a)=>s+a.media,0)/total).toFixed(1)} valores</span>
-      </div>`)}
-    ${card('Alertas Importantes','Situações que exigem atenção da Direcção',
-      `<div class="list">
-        <div class="list-item"><div class="ic" style="background:#fdeaea;color:#dc2626">⚠️</div>
-          <div><b>${DB.alunos.filter(a=>a.divida>0).length} alunos com propinas em atraso</b>
-          <p>Valor acumulado de ${KZ(divida)} — accionar cobrança automática.</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">🔧</div>
-          <div><b>${DB.avarias.filter(a=>a.estado!=='Concluído').length} avarias por resolver</b>
-          <p>${DB.avarias.filter(a=>a.prioridade==='Crítica'||a.prioridade==='Alta').length} de prioridade alta/crítica.</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📚</div>
-          <div><b>${DB.livros.filter(l=>l.disponiveis===0).length} títulos esgotados</b>
-          <p>Necessário reforço do acervo bibliográfico.</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">🚌</div>
-          <div><b>${DB.viaturas.filter(v=>v.estado!=='Operacional').length} viatura em manutenção</b>
-          <p>Rota afectada — reajustar horários de transporte.</p></div></div>
-      </div>`)}
-  </div>
+  // 3 cartões - receita, donut, alertas
+  let cardReceita = card('Receita Mensal (2025)','Evolução das receitas por mês', barras(DB.receitaMes));
 
-  ${card('Últimos Movimentos Financeiros','Registo mais recente de recebimentos',
+  let legendAprov = '<div class="legend">' +
+    '<span><i class="dot" style="background:#16a34a"></i> Aprovados — ' + DB.alunos.filter(a=>a.media>=10).length + ' alunos</span>' +
+    '<span><i class="dot" style="background:#dc2626"></i> Reprovados — ' + DB.alunos.filter(a=>a.media<10).length + ' alunos</span>' +
+    '<span><i class="dot" style="background:#e8eef6"></i> Média geral: ' + (DB.alunos.reduce((s,a)=>s+a.media,0)/total).toFixed(1) + ' valores</span>' +
+    '</div>';
+  let cardAprov = card('Aproveitamento Global','Distribuição dos alunos por desempenho', donut(aprovacao,'Aprovação') + legendAprov);
+
+  let alertas = '<div class="list">' +
+    '<div class="list-item"><div class="ic" style="background:#fdeaea;color:#dc2626">⚠️</div><div><b>' + nDevedores + ' alunos com propinas em atraso</b><p>Valor acumulado de ' + KZ(divida) + ' — accionar cobrança.</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">🔧</div><div><b>' + nAvarias + ' avarias por resolver</b><p>' + DB.avarias.filter(a=>a.prioridade==='Crítica'||a.prioridade==='Alta').length + ' de prioridade alta/crítica.</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📚</div><div><b>' + nLivrosEsg + ' títulos esgotados</b><p>Necessário reforço do acervo bibliográfico.</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">🚌</div><div><b>' + nViatManut + ' viatura em manutenção</b><p>Rota afectada — reajustar horários.</p></div></div>' +
+    '</div>';
+  let cardAlertas = card('Alertas Importantes','Situações que exigem atenção da Direcção', alertas);
+
+  html += '<div class="grid g3" style="margin-bottom:16px">' + cardReceita + cardAprov + cardAlertas + '</div>';
+
+  // Últimos movimentos
+  const rows = DB.pagamentos.slice(-12).reverse().map(p=>[
+    '<b>' + p.id + '</b>', p.aluno,
+    '<span class="tag info">' + p.tipo + '</span>',
+    '<b>' + KZ(p.valor) + '</b>', p.metodo, p.data
+  ]);
+  html += card('Últimos Movimentos Financeiros','Registo mais recente de recebimentos',
     busca('tPainel','Pesquisar movimentos...') +
-    tbl('tPainel',
-      ['Recibo','Aluno','Tipo','Valor','Método','Data'],
-      DB.pagamentos.slice(-12).reverse().map(p=>[
-        `<b>${p.id}</b>`, p.aluno, `<span class="tag info">${p.tipo}</span>`,
-        `<b>${KZ(p.valor)}</b>`, p.metodo, p.data
-      ])))}
-  `;
+    tbl('tPainel',['Recibo','Aluno','Tipo','Valor','Método','Data'], rows));
+
+  return html;
 };
 
+/* ---------- 2. SECRETARIA ---------- */
 VIEWS.secretaria = function(){
   const chip = estado.chips.secretaria || 'matriculas';
   let corpo = '';
 
   if(chip==='matriculas'){
+    const rows = DB.alunos.slice(0,60).map(a=>[
+      '<b>' + a.id + '</b>', a.nome, a.classe, a.turma, a.encarregado, a.telefone, selo(a.estado)
+    ]);
+    const botoes = '<div style="margin-bottom:14px">' +
+      '<button class="btn" onclick="modalMatricula()">➕ Nova Matrícula</button> ' +
+      '<button class="btn ghost" onclick="toast(\'Renovação de lote iniciada\',\'🔄\')">🔄 Renovar em Lote</button> ' +
+      '<button class="btn ghost" onclick="toast(\'Transferências pendentes: 3\',\'📄\')">🔁 Transferências</button></div>';
     corpo = card('Processos de Matrícula','Novas matrículas, renovações, transferências e mudanças de turma',
-      `<div style="margin-bottom:14px"><button class="btn" onclick="modalMatricula()">➕ Nova Matrícula</button>
-       <button class="btn ghost" onclick="toast('Renovação de matrículas em lote iniciada','🔄')">🔄 Renovar em Lote</button>
-       <button class="btn ghost" onclick="toast('Transferências pendentes: 3 processos','📄')">🔁 Transferências</button></div>` +
-      busca('tMat','Pesquisar aluno por nome, classe ou ID...') +
-      tbl('tMat',
-        ['Nº Processo','Nome do Aluno','Classe','Turma','Encarregado','Contacto','Estado'],
-        DB.alunos.slice(0,60).map(a=>[
-          `<b>${a.id}</b>`, a.nome, a.classe, a.turma, a.encarregado, a.telefone, selo(a.estado)
-        ])));
+      botoes + busca('tMat','Pesquisar aluno por nome, classe ou ID...') +
+      tbl('tMat',['Nº Processo','Nome do Aluno','Classe','Turma','Encarregado','Contacto','Estado'], rows));
   }
   else if(chip==='processos'){
-    corpo = `<div class="grid g2">
-      ${card('Emissão de Documentos','Documentos académicos disponíveis',
-        `<div class="list">
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📜</div><div><b>Certificados</b><p>Emissão de certificado de conclusão de classe</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Certificado gerado com sucesso','📜')">Emitir</button></div>
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📄</div><div><b>Declarações</b><p>Declaração de matrícula, frequência e notas</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Declaração emitida','📄')">Emitir</button></div>
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🪪</div><div><b>Cartões Escolares</b><p>Cartão de identificação do aluno</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Cartão enviado para impressão','🪪')">Emitir</button></div>
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📊</div><div><b>Histórico Escolar</b><p>Percurso académico completo do aluno</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Histórico gerado','📊')">Gerar</button></div>
-        </div>`)}
-      ${card('Processos Individuais','Situação documental por aluno',
+    const docs = '<div class="list">' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📜</div><div><b>Certificados</b><p>Certificado de conclusão de classe</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Certificado gerado\',\'📜\')">Emitir</button></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📄</div><div><b>Declarações</b><p>Declaração de matrícula, frequência e notas</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Declaração emitida\',\'📄\')">Emitir</button></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🪪</div><div><b>Cartões Escolares</b><p>Cartão de identificação do aluno</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Cartão para impressão\',\'🪪\')">Emitir</button></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📊</div><div><b>Histórico Escolar</b><p>Percurso académico completo</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Histórico gerado\',\'📊\')">Gerar</button></div>' +
+      '</div>';
+    const rowsProc = DB.alunos.slice(0,25).map(a=>[
+      '<b>' + a.id + '</b>', a.nome, a.classe,
+      rnd(['Completo','Incompleto']), rnd([selo('Activo'), selo('Pendente')])
+    ]);
+    corpo = '<div class="grid g2">' +
+      card('Emissão de Documentos','Documentos académicos disponíveis', docs) +
+      card('Processos Individuais','Situação documental por aluno',
         busca('tProc','Pesquisar processo...') +
-        tbl('tProc',['Nº Processo','Aluno','Classe','Documentos','Estado'],
-          DB.alunos.slice(0,25).map(a=>[`<b>${a.id}</b>`, a.nome, a.classe,
-            rnd(['Completo','Incompleto']), rnd([selo('Activo'), selo('Pendente')])])))}
-    </div>`;
+        tbl('tProc',['Nº Processo','Aluno','Classe','Documentos','Estado'], rowsProc)) +
+      '</div>';
   }
   else {
-    corpo = card('Arquivo Digital','Documentos digitalizados, fotografias, contratos e certificados',
-      `<div class="grid g4" style="margin-bottom:16px">
-        ${kpi('Documentos Digitalizados', '4.218', 'Actualizado hoje','b','🗄️')}
-        ${kpi('Fotografias', '1.104', 'Ficheiros de alunos','b','📷')}
-        ${kpi('Contratos', '312', 'Matrículas e serviços','b','📑')}
-        ${kpi('Certificados', '876', 'Emitidos e arquivados','b','🎖️')}
-      </div>` +
-      busca('tArq','Pesquisar documento...') +
-      tbl('tArq',['Código','Documento','Aluno','Data','Formato','Estado'],
-        DB.alunos.slice(0,22).map((a,i)=>[
-          `<b>DOC-${4000+i}</b>`, rnd(['Certificado','Declaração','Contrato','Fotografia','Boletim']),
-          a.nome, pad(ri(1,28))+'/0'+ri(1,9)+'/2025', rnd(['PDF','JPG','DOCX']), selo('Activo')
-        ])));
+    const rowsArq = DB.alunos.slice(0,22).map((a,i)=>[
+      '<b>DOC-' + (4000+i) + '</b>',
+      rnd(['Certificado','Declaração','Contrato','Fotografia','Boletim']),
+      a.nome, pad(ri(1,28)) + '/0' + ri(1,9) + '/2025',
+      rnd(['PDF','JPG','DOCX']), selo('Activo')
+    ]);
+    corpo = '<div class="grid g4" style="margin-bottom:16px">' +
+      kpi('Documentos Digitalizados','4.218','Actualizado hoje','b','🗄️') +
+      kpi('Fotografias','1.104','Ficheiros de alunos','b','📷') +
+      kpi('Contratos','312','Matrículas e serviços','b','📑') +
+      kpi('Certificados','876','Emitidos e arquivados','b','🎖️') +
+      '</div>' +
+      card('Arquivo Digital','Documentos digitalizados, fotografias, contratos e certificados',
+        busca('tArq','Pesquisar documento...') +
+        tbl('tArq',['Código','Documento','Aluno','Data','Formato','Estado'], rowsArq));
   }
 
-  return `<div class="chips">
-    ${[['matriculas','📝 Matrículas'],['processos','📂 Processos Académicos'],['arquivo','🗄️ Arquivo Digital']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('secretaria','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['matriculas','📝 Matrículas'],['processos','📂 Processos Académicos'],['arquivo','🗄️ Arquivo Digital']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'secretaria\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return chips + corpo;
 };
 
+/* ---------- 3. TESOURARIA ---------- */
 VIEWS.tesouraria = function(){
   const chip = estado.chips.tesouraria || 'recebimentos';
   const total = DB.pagamentos.reduce((s,p)=>s+p.valor,0);
   const divida = DB.alunos.reduce((s,a)=>s+a.divida,0);
   const hoje = DB.pagamentos.slice(-20).reduce((s,p)=>s+p.valor,0);
 
-  const kpis = `<div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Caixa Diário', KZ(hoje), 'Movimentos de hoje','g','💵')}
-    ${kpi('Receita Acumulada', KZ(total), DB.pagamentos.length+' transacções','g','📈')}
-    ${kpi('Contas a Receber', KZ(divida), DB.alunos.filter(a=>a.divida>0).length+' devedores','r','⚠️')}
-    ${kpi('Contas a Pagar', KZ(4_850_000), 'Fornecedores e salários','w','📤')}
-  </div>`;
+  let kpis = '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Caixa Diário', KZ(hoje), 'Movimentos de hoje','g','💵') +
+    kpi('Receita Acumulada', KZ(total), DB.pagamentos.length + ' transacções','g','📈') +
+    kpi('Contas a Receber', KZ(divida), DB.alunos.filter(a=>a.divida>0).length + ' devedores','r','⚠️') +
+    kpi('Contas a Pagar', KZ(4850000), 'Fornecedores e salários','w','📤') +
+    '</div>';
 
-  let corpo='';
+  let corpo = '';
   if(chip==='recebimentos'){
-    corpo = card('Registar Recebimento','Matrículas · Propinas · Taxas · Multas · Serviços diversos',
-      `<div class="inline-form">
-        <div class="field"><label>Aluno</label>
-          <select id="pgAluno">${DB.alunos.slice(0,80).map(a=>`<option value="${a.id}">${a.nome} — ${a.classe}</option>`).join('')}</select></div>
-        <div class="field"><label>Tipo</label>
-          <select id="pgTipo"><option>Matrícula</option><option>Propina</option><option>Taxa</option><option>Multa</option><option>Serviços</option></select></div>
-        <div class="field"><label>Valor (Kz)</label><input id="pgValor" type="number" value="15000"></div>
-        <div class="field"><label>Método</label>
-          <select id="pgMetodo"><option>Dinheiro</option><option>Multicaixa</option><option>Transferência</option><option>Depósito</option></select></div>
-        <button class="btn ok" onclick="registarPagamento()">💾 Registar</button>
-      </div>`) +
-      `<div style="height:20px"></div>` +
+    const optsAluno = DB.alunos.slice(0,80).map(a=>'<option value="' + a.id + '">' + a.nome + ' — ' + a.classe + '</option>').join('');
+    const form = '<div class="inline-form">' +
+      '<div class="field"><label>Aluno</label><select id="pgAluno">' + optsAluno + '</select></div>' +
+      '<div class="field"><label>Tipo</label><select id="pgTipo"><option>Matrícula</option><option>Propina</option><option>Taxa</option><option>Multa</option><option>Serviços</option></select></div>' +
+      '<div class="field"><label>Valor (Kz)</label><input id="pgValor" type="number" value="15000"></div>' +
+      '<div class="field"><label>Método</label><select id="pgMetodo"><option>Dinheiro</option><option>Multicaixa</option><option>Transferência</option><option>Depósito</option></select></div>' +
+      '<button class="btn ok" onclick="registarPagamento()">💾 Registar</button>' +
+      '</div>';
+
+    const rowsPg = DB.pagamentos.slice(-45).reverse().map(p=>[
+      '<b>' + p.id + '</b>', p.aluno,
+      '<span class="tag info">' + p.tipo + '</span>',
+      '<b>' + KZ(p.valor) + '</b>', p.metodo, p.data
+    ]);
+
+    corpo = card('Registar Recebimento','Matrículas · Propinas · Taxas · Multas · Serviços', form) +
+      '<div style="height:20px"></div>' +
       card('Histórico de Pagamentos','Todos os recebimentos registados',
         busca('tPg','Pesquisar recibo, aluno ou tipo...') +
-        tbl('tPg',['Recibo','Aluno','Tipo','Valor','Método','Data'],
-          DB.pagamentos.slice(-45).reverse().map(p=>[
-            `<b>${p.id}</b>`, p.aluno, `<span class="tag info">${p.tipo}</span>`,
-            `<b>${KZ(p.valor)}</b>`, p.metodo, p.data
-          ])));
+        tbl('tPg',['Recibo','Aluno','Tipo','Valor','Método','Data'], rowsPg));
   }
   else if(chip==='cobrancas'){
     const dev = DB.alunos.filter(a=>a.divida>0).sort((a,b)=>b.divida-a.divida);
+    const rows = dev.map(a=>[
+      a.nome, a.classe, a.turma, a.encarregado, a.telefone,
+      '<b style="color:#dc2626">' + KZ(a.divida) + '</b>',
+      '<button class="btn sm ghost" onclick="toast(\'Notificação enviada\',\'📲\')">Notificar</button>'
+    ]);
     corpo = card('Controle de Devedores','Notificações automáticas e histórico de cobrança',
-      `<button class="btn" onclick="toast('Notificações SMS enviadas a ${dev.length} encarregados','📲')">📲 Enviar Notificações em Massa</button>
-       <div style="height:14px"></div>` +
+      '<button class="btn" onclick="toast(\'Notificações SMS enviadas a ' + dev.length + ' encarregados\',\'📲\')">📲 Enviar Notificações em Massa</button>' +
+      '<div style="height:14px"></div>' +
       busca('tDev','Pesquisar devedor...') +
-      tbl('tDev',['Aluno','Classe','Turma','Encarregado','Contacto','Dívida','Acção'],
-        dev.map(a=>[a.nome, a.classe, a.turma, a.encarregado, a.telefone,
-          `<b style="color:#dc2626">${KZ(a.divida)}</b>`,
-          `<button class="btn sm ghost" onclick="toast('Notificação enviada a ${a.encarregado}','📲')">Notificar</button>`])));
+      tbl('tDev',['Aluno','Classe','Turma','Encarregado','Contacto','Dívida','Acção'], rows));
   }
   else if(chip==='financeiro'){
-    corpo = `<div class="grid g2">
-      ${card('Fluxo de Caixa Mensal','Receitas por mês', barras(DB.receitaMes))}
-      ${card('Receita por Classe','Distribuição da receita por nível de ensino',
-        barras(CLASSES.slice(0,8).map(c=>({label:c, value: ri(800,2600)*1000}))))}
-    </div>
-    <div style="height:16px"></div>
-    ${card('Reconciliação Bancária','Contas bancárias institucionais',
-      tbl('tBank',['Banco','Conta','Saldo','Última Reconciliação','Estado'],[
-        ['BAI','0040 0000 1234 5678', KZ(18_450_000),'28/10/2025', selo('Activo')],
-        ['BFA','0006 0000 8765 4321', KZ(9_320_000),'28/10/2025', selo('Activo')],
-        ['BIC','0051 0000 5566 7788', KZ(4_780_000),'27/10/2025', selo('Pendente')],
-        ['Standard Bank','0012 0000 9988 7766', KZ(2_150_000),'26/10/2025', selo('Activo')]
-      ]))}`;
+    const receitaClasse = CLASSES.slice(0,8).map(c=>({label:c, value: ri(800,2600)*1000}));
+    corpo = '<div class="grid g2">' +
+      card('Fluxo de Caixa Mensal','Receitas por mês', barras(DB.receitaMes)) +
+      card('Receita por Classe','Distribuição da receita por nível', barras(receitaClasse)) +
+      '</div><div style="height:16px"></div>' +
+      card('Reconciliação Bancária','Contas bancárias institucionais',
+        tbl('tBank',['Banco','Conta','Saldo','Última Reconciliação','Estado'],[
+          ['BAI','0040 0000 1234 5678', KZ(18450000),'28/10/2025', selo('Activo')],
+          ['BFA','0006 0000 8765 4321', KZ(9320000),'28/10/2025', selo('Activo')],
+          ['BIC','0051 0000 5566 7788', KZ(4780000),'27/10/2025', selo('Pendente')],
+          ['Standard Bank','0012 0000 9988 7766', KZ(2150000),'26/10/2025', selo('Activo')]
+        ]));
   }
   else {
-    corpo = `<div class="grid g2">
-      ${card('Demonstrativo de Receitas','Resumo por tipo de recebimento',
-        barras(['Matrícula','Propina','Taxa','Multa','Serviços'].map(t=>({
-          label:t,
-          value: DB.pagamentos.filter(p=>p.tipo===t).reduce((s,p)=>s+p.valor,0)
-        }))))}
-      ${card('Indicadores Financeiros','Taxa de cobrança e inadimplência',
-        donut(72,'Cobrança') +
-        `<div class="legend">
-          <span><i class="dot" style="background:#16a34a"></i> Receita realizada: <b>${KZ(total)}</b></span>
-          <span><i class="dot" style="background:#dc2626"></i> Inadimplência: <b>${KZ(divida)}</b></span>
-          <span><i class="dot" style="background:#f59e0b"></i> Taxa de inadimplência: <b>${(divida/(total+divida)*100).toFixed(1)}%</b></span>
-        </div>`)}
-    </div>`;
+    const tipos = ['Matrícula','Propina','Taxa','Multa','Serviços'];
+    const porTipo = tipos.map(t=>({
+      label:t,
+      value: DB.pagamentos.filter(p=>p.tipo===t).reduce((s,p)=>s+p.valor,0)
+    }));
+    const legend = '<div class="legend">' +
+      '<span><i class="dot" style="background:#16a34a"></i> Receita realizada: <b>' + KZ(total) + '</b></span>' +
+      '<span><i class="dot" style="background:#dc2626"></i> Inadimplência: <b>' + KZ(divida) + '</b></span>' +
+      '<span><i class="dot" style="background:#f59e0b"></i> Taxa de inadimplência: <b>' + (divida/(total+divida)*100).toFixed(1) + '%</b></span>' +
+      '</div>';
+    corpo = '<div class="grid g2">' +
+      card('Demonstrativo de Receitas','Resumo por tipo de recebimento', barras(porTipo)) +
+      card('Indicadores Financeiros','Taxa de cobrança e inadimplência', donut(72,'Cobrança') + legend) +
+      '</div>';
   }
 
-  return kpis + `<div class="chips">
-    ${[['recebimentos','💵 Recebimentos'],['cobrancas','📢 Cobranças'],['financeiro','🏦 Gestão Financeira'],['relatorios','📊 Relatórios']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('tesouraria','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['recebimentos','💵 Recebimentos'],['cobrancas','📢 Cobranças'],['financeiro','🏦 Gestão Financeira'],['relatorios','📊 Relatórios']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'tesouraria\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return kpis + chips + corpo;
 };
 
+/* ---------- 4. PEDAGÓGICO ---------- */
 VIEWS.pedagogico = function(){
   const chip = estado.chips.pedagogico || 'planeamento';
-  let corpo='';
+  let corpo = '';
 
   if(chip==='planeamento'){
-    corpo = `<div class="grid g2">
-      ${card('Ano Lectivo 2025','Configuração do período lectivo',
-        `<div class="list">
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📅</div><div><b>Início das aulas</b><p>02 de Setembro de 2025</p></div></div>
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📅</div><div><b>Fim do ano lectivo</b><p>11 de Julho de 2026</p></div></div>
-          <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🗓️</div><div><b>Trimestres</b><p>3 trimestres · 1º: Set–Dez · 2º: Jan–Abr · 3º: Abr–Jul</p></div></div>
-        </div>`)}
-      ${card('Calendário de Avaliações','Próximas provas e exames',
-        tbl('tCal',['Avaliação','Classe','Data','Estado'],[
-          ['1ª Prova Trimestral', '10ª Classe','14/11/2025', selo('Pendente')],
-          ['Teste de Matemática','9ª Classe','18/11/2025', selo('Pendente')],
-          ['Exame de Física','12ª Classe','25/11/2025', selo('Pendente')],
-          ['Prova de Português','7ª Classe','28/11/2025', selo('Pendente')],
-          ['Recuperação 1º Trim.','Todas','05/12/2025', selo('Pendente')]
-        ]))}
-    </div>
-    <div style="height:16px"></div>
-    ${card('Planeamento Curricular','Distribuição da carga horária por disciplina',
-      busca('tCur','Pesquisar disciplina...') +
-      tbl('tCur',['Disciplina','Classes','Carga Horária Semanal','Professor Responsável'],
-        DISCIPLINAS.map(d=>[d, rnd(['7ª–9ª','10ª–12ª','1ª–6ª']), ri(2,5)+' h/semana', rnd(DB.professores).nome])))}
-    `;
+    const ano = '<div class="list">' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📅</div><div><b>Início das aulas</b><p>02 de Setembro de 2025</p></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📅</div><div><b>Fim do ano lectivo</b><p>11 de Julho de 2026</p></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🗓️</div><div><b>Trimestres</b><p>3 trimestres · Set–Dez · Jan–Abr · Abr–Jul</p></div></div>' +
+      '</div>';
+    const cal = tbl('tCal',['Avaliação','Classe','Data','Estado'],[
+      ['1ª Prova Trimestral','10ª Classe','14/11/2025', selo('Pendente')],
+      ['Teste de Matemática','9ª Classe','18/11/2025', selo('Pendente')],
+      ['Exame de Física','12ª Classe','25/11/2025', selo('Pendente')],
+      ['Prova de Português','7ª Classe','28/11/2025', selo('Pendente')],
+      ['Recuperação 1º Trim.','Todas','05/12/2025', selo('Pendente')]
+    ]);
+    const rowsCur = DISCIPLINAS.map(d=>[d, rnd(['7ª–9ª','10ª–12ª','1ª–6ª']), ri(2,5)+' h/semana', rnd(DB.professores).nome]);
+    corpo = '<div class="grid g2">' +
+      card('Ano Lectivo 2025','Configuração do período lectivo', ano) +
+      card('Calendário de Avaliações','Próximas provas e exames', cal) +
+      '</div><div style="height:16px"></div>' +
+      card('Planeamento Curricular','Distribuição da carga horária por disciplina',
+        busca('tCur','Pesquisar disciplina...') +
+        tbl('tCur',['Disciplina','Classes','Carga Horária Semanal','Professor Responsável'], rowsCur));
   }
   else if(chip==='ensino'){
-    corpo = `<div class="grid g4" style="margin-bottom:16px">
-      ${kpi('Disciplinas', DISCIPLINAS.length, 'Currículo activo','b','📚')}
-      ${kpi('Classes', CLASSES.length, 'Do 1º ao 12º ano','b','🏫')}
-      ${kpi('Turmas', CLASSES.length*3, 'Turmas A, B e C','b','👥')}
-      ${kpi('Carga Horária', '32 h', 'Semanal por turma','b','⏰')}
-    </div>` +
-    card('Gestão de Turmas','Ocupação e directores de turma',
-      busca('tTur','Pesquisar turma...') +
-      tbl('tTur',['Turma','Classe','Nº Alunos','Director de Turma','Sala','Turno'],
-        CLASSES.flatMap(c=>['A','B','C'].map(t=>[
-          `<b>${c} ${t}</b>`, c, ri(22,38), rnd(DB.professores).nome, 'Sala '+ri(1,18), rnd(['Manhã','Tarde'])
-        ]))));
+    const rowsTur = [];
+    for(let c=0;c<CLASSES.length;c++){
+      for(let t=0;t<3;t++){
+        rowsTur.push(['<b>' + CLASSES[c] + ' ' + ['A','B','C'][t] + '</b>', CLASSES[c], ri(22,38), rnd(DB.professores).nome, 'Sala '+ri(1,18), rnd(['Manhã','Tarde'])]);
+      }
+    }
+    corpo = '<div class="grid g4" style="margin-bottom:16px">' +
+      kpi('Disciplinas', DISCIPLINAS.length, 'Currículo activo','b','📚') +
+      kpi('Classes', CLASSES.length, 'Do 1º ao 12º ano','b','🏫') +
+      kpi('Turmas', CLASSES.length*3, 'Turmas A, B e C','b','👥') +
+      kpi('Carga Horária', '32 h', 'Semanal por turma','b','⏰') +
+      '</div>' +
+      card('Gestão de Turmas','Ocupação e directores de turma',
+        busca('tTur','Pesquisar turma...') +
+        tbl('tTur',['Turma','Classe','Nº Alunos','Director de Turma','Sala','Turno'], rowsTur));
   }
   else if(chip==='avaliacoes'){
+    const rows = [];
+    for(let i=0;i<24;i++){
+      rows.push(['<b>AV-' + (500+i) + '</b>',
+        rnd(['Teste','Prova','Exame','Trabalho','Recuperação']),
+        rnd(DISCIPLINAS), rnd(CLASSES),
+        pad(ri(1,28)) + '/1' + ri(0,1) + '/2025',
+        rnd(['20%','30%','40%']),
+        rnd([selo('Concluído'), selo('Pendente')])]);
+    }
     corpo = card('Lançamento e Gestão de Avaliações','Testes, provas, exames, trabalhos e recuperações',
       busca('tAv','Pesquisar avaliação...') +
-      tbl('tAv',['Código','Tipo','Disciplina','Classe','Data','Peso','Estado'],
-        Array.from({length:24},(_,i)=>[
-          `<b>AV-${500+i}</b>`, rnd(['Teste','Prova','Exame','Trabalho','Recuperação']),
-          rnd(DISCIPLINAS), rnd(CLASSES), pad(ri(1,28))+'/1'+ri(0,1)+'/2025',
-          rnd(['20%','30%','40%']), rnd([selo('Concluído'), selo('Pendente')])
-        ])));
+      tbl('tAv',['Código','Tipo','Disciplina','Classe','Data','Peso','Estado'], rows));
   }
   else {
     const aprov = Math.round(DB.alunos.filter(a=>a.media>=10).length/DB.alunos.length*100);
-    corpo = `<div class="grid g4" style="margin-bottom:16px">
-      ${kpi('Média Geral', (DB.alunos.reduce((s,a)=>s+a.media,0)/DB.alunos.length).toFixed(1), 'Escala 0–20 valores','b','📊')}
-      ${kpi('Taxa de Aprovação', aprov+'%', 'Todos os níveis','g','🏆')}
-      ${kpi('Taxa de Reprovação', (100-aprov)+'%', 'Necessita reforço','r','📉')}
-      ${kpi('Melhor Disciplina','Matemática', 'Média de 14,2 valores','b','⭐')}
-    </div>
-    <div class="grid g2">
-      ${card('Aproveitamento por Disciplina','Média de notas por disciplina',
-        barras(DISCIPLINAS.slice(0,8).map(d=>({label:d, value: ri(90,175)*100}))))}
-      ${card('Aproveitamento por Classe','Média de notas por nível',
-        barras(CLASSES.map(c=>({label:c, value: ri(90,180)*100}))))}
-    </div>`;
+    const porDisc = DISCIPLINAS.slice(0,8).map(d=>({label:d, value: ri(90,175)*100}));
+    const porClasse = CLASSES.map(c=>({label:c, value: ri(90,180)*100}));
+    corpo = '<div class="grid g4" style="margin-bottom:16px">' +
+      kpi('Média Geral', (DB.alunos.reduce((s,a)=>s+a.media,0)/DB.alunos.length).toFixed(1), 'Escala 0–20 valores','b','📊') +
+      kpi('Taxa de Aprovação', aprov+'%', 'Todos os níveis','g','🏆') +
+      kpi('Taxa de Reprovação', (100-aprov)+'%', 'Necessita reforço','r','📉') +
+      kpi('Melhor Disciplina','Matemática', 'Média de 14,2 valores','b','⭐') +
+      '</div><div class="grid g2">' +
+      card('Aproveitamento por Disciplina','Média de notas por disciplina', barras(porDisc)) +
+      card('Aproveitamento por Classe','Média de notas por nível', barras(porClasse)) +
+      '</div>';
   }
 
-  return `<div class="chips">
-    ${[['planeamento','🗓️ Planeamento'],['ensino','🏫 Gestão de Ensino'],['avaliacoes','📝 Avaliações'],['resultados','📊 Resultados']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('pedagogico','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['planeamento','🗓️ Planeamento'],['ensino','🏫 Gestão de Ensino'],['avaliacoes','📝 Avaliações'],['resultados','📊 Resultados']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'pedagogico\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return chips + corpo;
 };
 
+/* ---------- 5. RH ---------- */
 VIEWS.rh = function(){
   const chip = estado.chips.rh || 'cadastro';
-  let corpo='';
+  let corpo = '';
 
   if(chip==='cadastro'){
-    corpo = `<div class="grid g4" style="margin-bottom:16px">
-      ${kpi('Total Colaboradores', DB.funcionarios.length + DB.professores.length, 'Professores e pessoal','b','👥')}
-      ${kpi('Professores', DB.professores.length, DB.professores.filter(p=>p.estado==='Activo').length+' activos','b','👨‍🏫')}
-      ${kpi('Administrativos', DB.funcionarios.filter(f=>['Secretária','Tesoureiro','Contabilista'].includes(f.funcao)).length, 'Secretaria e finanças','b','🗂️')}
-      ${kpi('Auxiliares e Serviços', DB.funcionarios.filter(f=>['Auxiliar','Motorista','Segurança'].includes(f.funcao)).length, 'Apoio operacional','b','🧹')}
-    </div>` +
-    card('Cadastro de Colaboradores','Professores, administrativos, auxiliares, motoristas e seguranças',
-      `<button class="btn" style="margin-bottom:14px" onclick="toast('Formulário de admissão aberto','➕')">➕ Novo Colaborador</button>` +
-      busca('tRh','Pesquisar colaborador...') +
-      tbl('tRh',['Nº','Nome','Função','Sector','Contrato','Estado'],
-        DB.funcionarios.map(f=>[`<b>${f.id}</b>`, f.nome, f.funcao, f.sector, f.contrato, selo(f.estado)])));
+    const nAdm = DB.funcionarios.filter(f=>['Secretária','Tesoureiro','Contabilista'].indexOf(f.funcao)>=0).length;
+    const nAux = DB.funcionarios.filter(f=>['Auxiliar','Motorista','Segurança'].indexOf(f.funcao)>=0).length;
+    const rows = DB.funcionarios.map(f=>['<b>'+f.id+'</b>', f.nome, f.funcao, f.sector, f.contrato, selo(f.estado)]);
+    corpo = '<div class="grid g4" style="margin-bottom:16px">' +
+      kpi('Total Colaboradores', DB.funcionarios.length + DB.professores.length, 'Professores e pessoal','b','👥') +
+      kpi('Professores', DB.professores.length, DB.professores.filter(p=>p.estado==='Activo').length+' activos','b','👨‍🏫') +
+      kpi('Administrativos', nAdm, 'Secretaria e finanças','b','🗂️') +
+      kpi('Auxiliares e Serviços', nAux, 'Apoio operacional','b','🧹') +
+      '</div>' +
+      card('Cadastro de Colaboradores','Professores, administrativos, auxiliares, motoristas e seguranças',
+        '<button class="btn" style="margin-bottom:14px" onclick="toast(\'Formulário de admissão aberto\',\'➕\')">➕ Novo Colaborador</button>' +
+        busca('tRh','Pesquisar colaborador...') +
+        tbl('tRh',['Nº','Nome','Função','Sector','Contrato','Estado'], rows));
   }
   else if(chip==='laboral'){
-    corpo = `<div class="grid g2">
-      ${card('Assiduidade do Mês','Registo de presenças e faltas',
-        barras([{label:'Presenças', value: 4120},{label:'Faltas Justificadas', value: 186},
-                {label:'Faltas Injustificadas', value: 64},{label:'Licenças', value: 42}]))}
-      ${card('Férias e Licenças','Pedidos em curso',
-        tbl('tFer',['Colaborador','Tipo','Período','Dias','Estado'],[
-          ['Maria Fernandes','Férias','01/11 – 15/11','15', selo('Activo')],
-          ['João Baptista','Licença Médica','22/10 – 29/10','8', selo('Activo')],
-          ['Paulo Neto','Férias','05/12 – 19/12','15', selo('Pendente')],
-          ['Olga Costa','Licença Maternidade','10/09 – 10/12','92', selo('Activo')]
-        ]))}
-    </div>
-    <div style="height:16px"></div>
-    ${card('Contratos e Avaliação de Desempenho','Situação contratual dos colaboradores',
-      busca('tCt','Pesquisar colaborador...') +
-      tbl('tCt',['Colaborador','Função','Tipo de Contrato','Início','Avaliação','Estado'],
-        DB.funcionarios.slice(0,20).map(f=>[f.nome, f.funcao, f.contrato,
-          pad(ri(1,28))+'/0'+ri(1,9)+'/2022', (ri(30,50)/10).toFixed(1)+' / 5.0', selo(f.estado)])))}
-    `;
+    const assid = [
+      {label:'Presenças', value: 4120},
+      {label:'Faltas Justificadas', value: 186},
+      {label:'Faltas Injustificadas', value: 64},
+      {label:'Licenças', value: 42}
+    ];
+    const ferias = tbl('tFer',['Colaborador','Tipo','Período','Dias','Estado'],[
+      ['Maria Fernandes','Férias','01/11 – 15/11','15', selo('Activo')],
+      ['João Baptista','Licença Médica','22/10 – 29/10','8', selo('Activo')],
+      ['Paulo Neto','Férias','05/12 – 19/12','15', selo('Pendente')],
+      ['Olga Costa','Licença Maternidade','10/09 – 10/12','92', selo('Activo')]
+    ]);
+    const rowsCt = DB.funcionarios.slice(0,20).map(f=>[
+      f.nome, f.funcao, f.contrato,
+      pad(ri(1,28))+'/0'+ri(1,9)+'/2022',
+      (ri(30,50)/10).toFixed(1)+' / 5.0',
+      selo(f.estado)
+    ]);
+    corpo = '<div class="grid g2">' +
+      card('Assiduidade do Mês','Registo de presenças e faltas', barras(assid)) +
+      card('Férias e Licenças','Pedidos em curso', ferias) +
+      '</div><div style="height:16px"></div>' +
+      card('Contratos e Avaliação de Desempenho','Situação contratual dos colaboradores',
+        busca('tCt','Pesquisar colaborador...') +
+        tbl('tCt',['Colaborador','Função','Tipo de Contrato','Início','Avaliação','Estado'], rowsCt));
   }
   else {
     corpo = card('Escalas de Trabalho','Distribuição semanal por sector',
@@ -895,359 +903,405 @@ VIEWS.rh = function(){
       ]));
   }
 
-  return `<div class="chips">
-    ${[['cadastro','👥 Cadastro'],['laboral','📋 Gestão Laboral'],['escalas','⏰ Escalas']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('rh','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['cadastro','👥 Cadastro'],['laboral','📋 Gestão Laboral'],['escalas','⏰ Escalas']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'rh\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return chips + corpo;
 };
 
+/* ---------- 6. PROFESSORES ---------- */
 VIEWS.professores = function(){
   const chip = estado.chips.professores || 'lista';
-  let corpo='';
+  let corpo = '';
 
   if(chip==='lista'){
+    const rows = DB.professores.map(p=>[
+      '<b>'+p.id+'</b>', p.nome, p.disciplina, p.classes, p.telefone,
+      p.presenca+'%', '⭐ '+p.avaliacao, selo(p.estado)
+    ]);
     corpo = card('Corpo Docente','Horários, turmas atribuídas e disciplinas leccionadas',
       busca('tProf','Pesquisar professor ou disciplina...') +
-      tbl('tProf',['Nº','Professor','Disciplina','Classes','Contacto','Presença','Avaliação','Estado'],
-        DB.professores.map(p=>[
-          `<b>${p.id}</b>`, p.nome, p.disciplina, p.classes, p.telefone,
-          p.presenca+'%', '⭐ '+p.avaliacao, selo(p.estado)
-        ])));
+      tbl('tProf',['Nº','Professor','Disciplina','Classes','Contacto','Presença','Avaliação','Estado'], rows));
   }
   else if(chip==='presencas'){
+    const rows = DB.professores.map(p=>{
+      const pres = Math.round(p.presenca*1.2);
+      const faltas = 120 - pres;
+      return [p.nome, p.disciplina, pres, faltas, p.presenca+'%',
+        p.presenca>=95 ? selo('Activo') : selo('Pendente')];
+    });
     corpo = card('Registo de Presenças','Assiduidade docente',
       busca('tPres','Pesquisar professor...') +
-      tbl('tPres',['Professor','Disciplina','Presenças','Faltas','Taxa','Situação'],
-        DB.professores.map(p=>{
-          const pres = Math.round(p.presenca*1.2), faltas = 120 - pres;
-          return [p.nome, p.disciplina, pres, faltas, p.presenca+'%',
-            p.presenca>=95 ? selo('Activo') : selo('Pendente')];
-        })));
+      tbl('tPres',['Professor','Disciplina','Presenças','Faltas','Taxa','Situação'], rows));
   }
   else if(chip==='planos'){
+    const rows = [];
+    for(let i=0;i<18;i++){
+      rows.push(['<b>PL-'+(300+i)+'</b>',
+        rnd(DB.professores).nome, rnd(DISCIPLINAS), rnd(CLASSES),
+        rnd(['Equações do 2º Grau','Análise Sintáctica','Leis de Newton','Reacções Químicas','Fotossíntese','Climas Tropicais']),
+        pad(ri(1,28))+'/10/2025',
+        rnd([selo('Concluído'), selo('Pendente')])]);
+    }
     corpo = card('Planos de Aula','Submissão e aprovação de planos pedagógicos',
-      `<button class="btn" style="margin-bottom:14px" onclick="toast('Plano de aula submetido para aprovação','📝')">➕ Submeter Plano de Aula</button>` +
+      '<button class="btn" style="margin-bottom:14px" onclick="toast(\'Plano submetido\',\'📝\')">➕ Submeter Plano de Aula</button>' +
       busca('tPl','Pesquisar plano...') +
-      tbl('tPl',['Código','Professor','Disciplina','Classe','Tema','Data','Estado'],
-        Array.from({length:18},(_,i)=>[
-          `<b>PL-${300+i}</b>`, rnd(DB.professores).nome, rnd(DISCIPLINAS), rnd(CLASSES),
-          rnd(['Equações do 2º Grau','Análise Sintáctica','Leis de Newton','Reacções Químicas','Fotossíntese','Climas Tropicais']),
-          pad(ri(1,28))+'/10/2025', rnd([selo('Concluído'), selo('Pendente')])
-        ])));
+      tbl('tPl',['Código','Professor','Disciplina','Classe','Tema','Data','Estado'], rows));
   }
   else {
-    corpo = `<div class="grid g2">
-      ${card('Lançamento de Notas','Introdução de notas por disciplina e turma',
-        `<div class="inline-form">
-          <div class="field"><label>Turma</label>
-            <select>${CLASSES.slice(0,6).map(c=>`<option>${c} A</option>`).join('')}</select></div>
-          <div class="field"><label>Disciplina</label>
-            <select>${DISCIPLINAS.slice(0,6).map(d=>`<option>${d}</option>`).join('')}</select></div>
-          <div class="field"><label>Trimestre</label>
-            <select><option>1º Trimestre</option><option>2º Trimestre</option><option>3º Trimestre</option></select></div>
-          <button class="btn" onclick="toast('Pauta aberta para lançamento de notas','📝')">Abrir Pauta</button>
-        </div>`)}
-      ${card('Relatórios Pedagógicos','Desempenho por docente',
-        barras(DB.professores.slice(0,8).map(p=>({label:p.nome.split(' ')[0], value: p.presenca*1000}))))}
-    </div>`;
+    const optsTurma = CLASSES.slice(0,6).map(c=>'<option>'+c+' A</option>').join('');
+    const optsDisc = DISCIPLINAS.slice(0,6).map(d=>'<option>'+d+'</option>').join('');
+    const form = '<div class="inline-form">' +
+      '<div class="field"><label>Turma</label><select>' + optsTurma + '</select></div>' +
+      '<div class="field"><label>Disciplina</label><select>' + optsDisc + '</select></div>' +
+      '<div class="field"><label>Trimestre</label><select><option>1º Trimestre</option><option>2º Trimestre</option><option>3º Trimestre</option></select></div>' +
+      '<button class="btn" onclick="toast(\'Pauta aberta\',\'📝\')">Abrir Pauta</button>' +
+      '</div>';
+    const perf = DB.professores.slice(0,8).map(p=>({label:p.nome.split(' ')[0], value: p.presenca*1000}));
+    corpo = '<div class="grid g2">' +
+      card('Lançamento de Notas','Introdução de notas por disciplina e turma', form) +
+      card('Relatórios Pedagógicos','Desempenho por docente', barras(perf)) +
+      '</div>';
   }
 
-  return `<div class="chips">
-    ${[['lista','👨‍🏫 Corpo Docente'],['presencas','✅ Presenças'],['planos','📝 Planos de Aula'],['notas','📊 Notas']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('professores','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['lista','👨‍🏫 Corpo Docente'],['presencas','✅ Presenças'],['planos','📝 Planos de Aula'],['notas','📊 Notas']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'professores\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return chips + corpo;
 };
 
+/* ---------- 7. ALUNOS ---------- */
 VIEWS.alunos = function(){
   const total = DB.alunos.length;
   const comDivida = DB.alunos.filter(a=>a.divida>0).length;
 
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Total de Alunos', total, 'Matriculados em 2025','b','🎓')}
-    ${kpi('Alunos Activos', DB.alunos.filter(a=>a.estado==='Activo').length, 'A frequentar as aulas','g','✅')}
-    ${kpi('Com Dívidas', comDivida, KZ(DB.alunos.reduce((s,a)=>s+a.divida,0)),'r','⚠️')}
-    ${kpi('Média Global', (DB.alunos.reduce((s,a)=>s+a.media,0)/total).toFixed(1), 'Escala 0–20 valores','b','📊')}
-  </div>
+  let html = '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Total de Alunos', total, 'Matriculados em 2025','b','🎓') +
+    kpi('Alunos Activos', DB.alunos.filter(a=>a.estado==='Activo').length, 'A frequentar as aulas','g','✅') +
+    kpi('Com Dívidas', comDivida, KZ(DB.alunos.reduce((s,a)=>s+a.divida,0)),'r','⚠️') +
+    kpi('Média Global', (DB.alunos.reduce((s,a)=>s+a.media,0)/total).toFixed(1), 'Escala 0–20 valores','b','📊') +
+    '</div>';
 
-  ${card('Ficha do Aluno — Acompanhamento Integral','Dados pessoais, processo académico, frequência, comportamento e pagamentos',
+  const rows = DB.alunos.map(a=>{
+    const div = a.divida>0
+      ? '<span style="color:#dc2626;font-weight:700">' + KZ(a.divida) + '</span>'
+      : '—';
+    return ['<b>'+a.id+'</b>', a.nome, a.classe, a.turma, a.encarregado, a.telefone,
+            '<b>'+a.media+'</b>', a.freq+'%', div, selo(a.estado)];
+  });
+  html += card('Ficha do Aluno — Acompanhamento Integral','Dados pessoais, processo académico, frequência, comportamento e pagamentos',
     busca('tAl','Pesquisar aluno por nome, ID, classe ou encarregado...') +
-    tbl('tAl',['Nº','Nome','Classe','Turma','Encarregado','Contacto','Média','Frequência','Dívida','Estado'],
-      DB.alunos.map(a=>[
-        `<b>${a.id}</b>`, a.nome, a.classe, a.turma, a.encarregado, a.telefone,
-        `<b>${a.media}</b>`, a.freq+'%',
-        a.divida>0?`<span style="color:#dc2626;font-weight:700">${KZ(a.divida)}</span>`:'—',
-        selo(a.estado)
-      ])))}
+    tbl('tAl',['Nº','Nome','Classe','Turma','Encarregado','Contacto','Média','Frequência','Dívida','Estado'], rows));
 
-  <div style="height:16px"></div>
-  <div class="grid g3">
-    ${card('Distribuição por Classe','Alunos por nível de ensino',
-      barras(CLASSES.map(c=>({label:c, value: DB.alunos.filter(a=>a.classe===c).length}))))}
-    ${card('Distribuição por Género','Composição do corpo discente',
-      donut(Math.round(DB.alunos.filter(a=>a.genero==='F').length/total*100),'Feminino') +
-      `<div class="legend">
-        <span><i class="dot" style="background:#1b7fbf"></i> Masculino: <b>${DB.alunos.filter(a=>a.genero==='M').length}</b></span>
-        <span><i class="dot" style="background:#16a34a"></i> Feminino: <b>${DB.alunos.filter(a=>a.genero==='F').length}</b></span>
-      </div>`)}
-    ${card('Comportamento e Extracurriculares','Registo qualitativo',
-      `<div class="list">
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">😊</div><div><b>Bom comportamento</b><p>${Math.round(total*0.82)} alunos</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">😐</div><div><b>Comportamento regular</b><p>${Math.round(total*0.14)} alunos</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#fdeaea;color:#dc2626">😟</div><div><b>Comportamento a melhorar</b><p>${Math.round(total*0.04)} alunos</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">⚽</div><div><b>Actividades extracurriculares</b><p>Futebol, teatro, música, clube de ciências</p></div></div>
-      </div>`)}
-  </div>`;
+  html += '<div style="height:16px"></div><div class="grid g3">';
+
+  const porClasse = CLASSES.map(c=>({label:c, value: DB.alunos.filter(a=>a.classe===c).length}));
+  html += card('Distribuição por Classe','Alunos por nível de ensino', barras(porClasse));
+
+  const fem = Math.round(DB.alunos.filter(a=>a.genero==='F').length/total*100);
+  const legendGen = '<div class="legend">' +
+    '<span><i class="dot" style="background:#1b7fbf"></i> Masculino: <b>' + DB.alunos.filter(a=>a.genero==='M').length + '</b></span>' +
+    '<span><i class="dot" style="background:#16a34a"></i> Feminino: <b>' + DB.alunos.filter(a=>a.genero==='F').length + '</b></span>' +
+    '</div>';
+  html += card('Distribuição por Género','Composição do corpo discente', donut(fem,'Feminino') + legendGen);
+
+  const comp = '<div class="list">' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">😊</div><div><b>Bom comportamento</b><p>' + Math.round(total*0.82) + ' alunos</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">😐</div><div><b>Comportamento regular</b><p>' + Math.round(total*0.14) + ' alunos</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#fdeaea;color:#dc2626">😟</div><div><b>A melhorar</b><p>' + Math.round(total*0.04) + ' alunos</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">⚽</div><div><b>Extracurriculares</b><p>Futebol, teatro, música, clube de ciências</p></div></div>' +
+    '</div>';
+  html += card('Comportamento e Extracurriculares','Registo qualitativo', comp);
+
+  html += '</div>';
+  return html;
 };
 
+/* ---------- 8. COMUNICAÇÃO ---------- */
 VIEWS.comunicacao = function(){
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('SMS Enviados', '3.842', 'Este mês','b','📲')}
-    ${kpi('Mensagens WhatsApp', '1.276', 'Este mês','g','💬')}
-    ${kpi('E-mails', '928', 'Este mês','b','✉️')}
-    ${kpi('Comunicados', '46', 'Publicados','b','📢')}
-  </div>
+  let html = '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('SMS Enviados','3.842','Este mês','b','📲') +
+    kpi('Mensagens WhatsApp','1.276','Este mês','g','💬') +
+    kpi('E-mails','928','Este mês','b','✉️') +
+    kpi('Comunicados','46','Publicados','b','📢') +
+    '</div>';
 
-  <div class="grid g2" style="margin-bottom:16px">
-    ${card('Nova Mensagem','Envio de SMS, WhatsApp e correio electrónico',
-      `<div class="form-grid">
-        <div class="field"><label>Destinatários</label>
-          <select id="cmDest"><option>Encarregados de Educação</option><option>Todos os Alunos</option>
-          <option>Professores</option><option>Funcionários</option><option>Turma Específica</option></select></div>
-        <div class="field"><label>Canal</label>
-          <select id="cmCanal"><option>SMS</option><option>WhatsApp</option><option>E-mail</option><option>Notificação Interna</option></select></div>
-        <div class="field" style="grid-column:1/-1"><label>Assunto</label>
-          <input id="cmAssunto" placeholder="Ex.: Convocatória para Reunião de Pais"></div>
-        <div class="field" style="grid-column:1/-1"><label>Mensagem</label>
-          <textarea id="cmMsg" rows="4" style="width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fafbfe;outline:none;resize:vertical"
-            placeholder="Escreva a mensagem..."></textarea></div>
-      </div>
-      <button class="btn" style="margin-top:14px" onclick="enviarComunicado()">📤 Enviar Mensagem</button>`)}
-    ${card('Automatizações','Mensagens enviadas automaticamente pelo sistema',
-      `<div class="toggle"><span>⚠️ Aviso de pagamento em atraso</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>❌ Aviso de falta do aluno</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>📊 Divulgação de resultados</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>📅 Convocação para reuniões</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>🎂 Mensagem de aniversário</span><div class="sw" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>📚 Aviso de devolução de livros</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>`)}
-  </div>
+  const form = '<div class="form-grid">' +
+    '<div class="field"><label>Destinatários</label><select id="cmDest"><option>Encarregados de Educação</option><option>Todos os Alunos</option><option>Professores</option><option>Funcionários</option><option>Turma Específica</option></select></div>' +
+    '<div class="field"><label>Canal</label><select id="cmCanal"><option>SMS</option><option>WhatsApp</option><option>E-mail</option><option>Notificação Interna</option></select></div>' +
+    '<div class="field" style="grid-column:1/-1"><label>Assunto</label><input id="cmAssunto" placeholder="Ex.: Convocatória para Reunião"></div>' +
+    '<div class="field" style="grid-column:1/-1"><label>Mensagem</label><textarea id="cmMsg" rows="4" style="width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fafbfe;outline:none;resize:vertical" placeholder="Escreva a mensagem..."></textarea></div>' +
+    '</div>' +
+    '<button class="btn" style="margin-top:14px" onclick="enviarComunicado()">📤 Enviar Mensagem</button>';
 
-  ${card('Histórico de Comunicados','Circulares, convocatórias e notificações',
+  const autos = '<div class="toggle"><span>⚠️ Aviso de pagamento em atraso</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>❌ Aviso de falta do aluno</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>📊 Divulgação de resultados</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>📅 Convocação para reuniões</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>🎂 Mensagem de aniversário</span><div class="sw" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>📚 Aviso de devolução de livros</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>';
+
+  html += '<div class="grid g2" style="margin-bottom:16px">' +
+    card('Nova Mensagem','Envio de SMS, WhatsApp e correio electrónico', form) +
+    card('Automatizações','Mensagens enviadas automaticamente', autos) +
+    '</div>';
+
+  const rows = [
+    ['CM-001','Convocatória para Reunião de Pais','Encarregados','SMS + E-mail','12/10/2025', selo('Concluído')],
+    ['CM-002','Calendário de Provas Trimestrais','Todos os Alunos','WhatsApp','14/10/2025', selo('Concluído')],
+    ['CM-003','Aviso de Pagamento de Propinas','Encarregados','SMS','18/10/2025', selo('Concluído')],
+    ['CM-004','Circular sobre Uniforme Escolar','Encarregados','E-mail','21/10/2025', selo('Concluído')],
+    ['CM-005','Reunião do Conselho Pedagógico','Professores','Notificação Interna','25/10/2025', selo('Pendente')],
+    ['CM-006','Divulgação de Resultados 1º Trim.','Encarregados','SMS + WhatsApp','02/12/2025', selo('Pendente')]
+  ];
+  html += card('Histórico de Comunicados','Circulares, convocatórias e notificações',
     busca('tCm','Pesquisar comunicado...') +
-    tbl('tCm',['Código','Assunto','Destinatários','Canal','Data','Estado'],[
-      ['CM-001','Convocatória para Reunião de Pais','Encarregados','SMS + E-mail','12/10/2025', selo('Concluído')],
-      ['CM-002','Calendário de Provas Trimestrais','Todos os Alunos','WhatsApp','14/10/2025', selo('Concluído')],
-      ['CM-003','Aviso de Pagamento de Propinas','Encarregados','SMS','18/10/2025', selo('Concluído')],
-      ['CM-004','Circular sobre Uniforme Escolar','Encarregados','E-mail','21/10/2025', selo('Concluído')],
-      ['CM-005','Reunião do Conselho Pedagógico','Professores','Notificação Interna','25/10/2025', selo('Pendente')],
-      ['CM-006','Divulgação de Resultados 1º Trim.','Encarregados','SMS + WhatsApp','02/12/2025', selo('Pendente')]
-    ]))}
-  `;
+    tbl('tCm',['Código','Assunto','Destinatários','Canal','Data','Estado'], rows));
+
+  return html;
 };
 
+/* ---------- 9. BIBLIOTECA ---------- */
 VIEWS.biblioteca = function(){
   const chip = estado.chips.biblioteca || 'acervo';
-  let corpo='';
+  let corpo = '';
 
   if(chip==='acervo'){
-    corpo = `<div class="grid g4" style="margin-bottom:16px">
-      ${kpi('Títulos', DB.livros.length, 'Obras catalogadas','b','📚')}
-      ${kpi('Exemplares', DB.livros.reduce((s,l)=>s+l.exemplares,0), 'Total do acervo','b','📦')}
-      ${kpi('Disponíveis', DB.livros.reduce((s,l)=>s+l.disponiveis,0), 'Prontos para empréstimo','g','✅')}
-      ${kpi('Emprestados', '37', 'Devolução pendente','w','📤')}
-    </div>` +
-    card('Cadastro de Livros','Acervo bibliográfico da instituição',
-      `<button class="btn" style="margin-bottom:14px" onclick="toast('Formulário de registo de obra aberto','➕')">➕ Registar Livro</button>` +
-      busca('tLv','Pesquisar título, autor ou categoria...') +
-      tbl('tLv',['Código','Título','Autor','Categoria','Exemplares','Disponíveis','Estado'],
-        DB.livros.map(l=>[`<b>${l.id}</b>`, l.titulo, l.autor, l.categoria, l.exemplares,
-          l.disponiveis>0?`<span class="tag ok">${l.disponiveis}</span>`:`<span class="tag dg">0</span>`,
-          selo(l.estado)])));
+    const totDisp = DB.livros.reduce((s,l)=>s+l.disponiveis,0);
+    const totEx = DB.livros.reduce((s,l)=>s+l.exemplares,0);
+    const rows = DB.livros.map(l=>{
+      const disp = l.disponiveis>0
+        ? '<span class="tag ok">' + l.disponiveis + '</span>'
+        : '<span class="tag dg">0</span>';
+      return ['<b>'+l.id+'</b>', l.titulo, l.autor, l.categoria, l.exemplares, disp, selo(l.estado)];
+    });
+    corpo = '<div class="grid g4" style="margin-bottom:16px">' +
+      kpi('Títulos', DB.livros.length, 'Obras catalogadas','b','📚') +
+      kpi('Exemplares', totEx, 'Total do acervo','b','📦') +
+      kpi('Disponíveis', totDisp, 'Prontos para empréstimo','g','✅') +
+      kpi('Emprestados','37', 'Devolução pendente','w','📤') +
+      '</div>' +
+      card('Cadastro de Livros','Acervo bibliográfico da instituição',
+        '<button class="btn" style="margin-bottom:14px" onclick="toast(\'Formulário aberto\',\'➕\')">➕ Registar Livro</button>' +
+        busca('tLv','Pesquisar título, autor ou categoria...') +
+        tbl('tLv',['Código','Título','Autor','Categoria','Exemplares','Disponíveis','Estado'], rows));
   }
   else if(chip==='emprestimos'){
+    const optsA = DB.alunos.slice(0,60).map(a=>'<option>'+a.nome+'</option>').join('');
+    const optsL = DB.livros.slice(0,25).map(l=>'<option>'+l.titulo+'</option>').join('');
+    const form = '<div class="inline-form" style="margin-bottom:16px">' +
+      '<div class="field"><label>Aluno</label><select>' + optsA + '</select></div>' +
+      '<div class="field"><label>Livro</label><select>' + optsL + '</select></div>' +
+      '<div class="field"><label>Devolução prevista</label><input type="date" value="2025-11-15"></div>' +
+      '<button class="btn" onclick="toast(\'Empréstimo registado\',\'📖\')">Registar Empréstimo</button>' +
+      '</div>';
+
+    const rows = [];
+    for(let i=0;i<20;i++){
+      const atraso = Math.random()<0.25;
+      rows.push(['<b>EM-'+(800+i)+'</b>',
+        rnd(DB.alunos).nome, rnd(DB.livros).titulo,
+        pad(ri(1,28))+'/10/2025', pad(ri(1,28))+'/10/2025',
+        atraso ? selo('Pendente') : selo('Concluído'),
+        atraso ? '<span style="color:#dc2626;font-weight:700">'+KZ(ri(1,5)*2500)+'</span>' : '—']);
+    }
     corpo = card('Empréstimos e Devoluções','Controlo de circulação do acervo',
-      `<div class="inline-form" style="margin-bottom:16px">
-        <div class="field"><label>Aluno</label><select id="empAluno">${DB.alunos.slice(0,60).map(a=>`<option>${a.nome}</option>`).join('')}</select></div>
-        <div class="field"><label>Livro</label><select>${DB.livros.slice(0,25).map(l=>`<option>${l.titulo}</option>`).join('')}</select></div>
-        <div class="field"><label>Devolução prevista</label><input type="date" value="2025-11-15"></div>
-        <button class="btn" onclick="toast('Empréstimo registado com sucesso','📖')">Registar Empréstimo</button>
-      </div>` +
-      busca('tEmp','Pesquisar empréstimo...') +
-      tbl('tEmp',['Código','Aluno','Livro','Data Empréstimo','Devolução','Estado','Multa'],
-        Array.from({length:20},(_,i)=>{
-          const atraso = Math.random()<0.25;
-          return [`<b>EM-${800+i}</b>`, rnd(DB.alunos).nome, rnd(DB.livros).titulo,
-            pad(ri(1,28))+'/10/2025', pad(ri(1,28))+'/10/2025',
-            atraso?selo('Pendente'):selo('Concluído'),
-            atraso?`<span style="color:#dc2626;font-weight:700">${KZ(ri(1,5)*2500)}</span>`:'—'];
-        })));
+      form + busca('tEmp','Pesquisar empréstimo...') +
+      tbl('tEmp',['Código','Aluno','Livro','Data Empréstimo','Devolução','Estado','Multa'], rows));
   }
   else {
+    const cats = ['Didáctico','Literatura','Ciências','Referência','História'];
+    const rows = cats.map(c=>{
+      const ls = DB.livros.filter(l=>l.categoria===c);
+      return [c, ls.length, ls.reduce((s,l)=>s+l.exemplares,0), ri(5,30), ri(2,12), ri(0,5)];
+    });
     corpo = card('Inventário Bibliográfico','Estado de conservação e reposição do acervo',
       busca('tInv','Pesquisar...') +
-      tbl('tInv',['Categoria','Títulos','Exemplares','Bom Estado','Razoável','Danificado'],
-        ['Didáctico','Literatura','Ciências','Referência','História'].map(c=>{
-          const ls = DB.livros.filter(l=>l.categoria===c);
-          return [c, ls.length, ls.reduce((s,l)=>s+l.exemplares,0), ri(5,30), ri(2,12), ri(0,5)];
-        })));
+      tbl('tInv',['Categoria','Títulos','Exemplares','Bom Estado','Razoável','Danificado'], rows));
   }
 
-  return `<div class="chips">
-    ${[['acervo','📚 Acervo'],['emprestimos','🔄 Empréstimos'],['inventario','📋 Inventário']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('biblioteca','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['acervo','📚 Acervo'],['emprestimos','🔄 Empréstimos'],['inventario','📋 Inventário']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'biblioteca\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return chips + corpo;
 };
 
+/* ---------- 10. PATRIMÓNIO ---------- */
 VIEWS.patrimonio = function(){
   const valor = DB.patrimonio.reduce((s,p)=>s+p.valor,0);
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Total de Bens', DB.patrimonio.length, 'Registados no inventário','b','🏛️')}
-    ${kpi('Valor Patrimonial', KZ(valor), 'Valor estimado total','g','💰')}
-    ${kpi('Bom Estado', DB.patrimonio.filter(p=>p.estado==='Bom').length, 'Sem necessidade de intervenção','g','✅')}
-    ${kpi('A Reparar', DB.patrimonio.filter(p=>p.estado!=='Bom').length, 'Necessitam de manutenção','r','🔧')}
-  </div>
+  const rows = DB.patrimonio.map(p=>[
+    '<b>'+p.id+'</b>', p.bem, p.categoria, p.local, KZ(p.valor), selo(p.estado)
+  ]);
+  const catBens = ['Informática','Mobiliário','Laboratório','Didáctico','Infra-estrutura'].map(c=>({
+    label:c, value: DB.patrimonio.filter(p=>p.categoria===c).length*100000
+  }));
 
-  ${card('Inventário de Bens','Equipamentos informáticos, mobiliário, laboratório e material didáctico',
-    `<button class="btn" style="margin-bottom:14px" onclick="toast('Novo bem adicionado ao inventário','➕')">➕ Registar Bem</button>` +
-    busca('tPat','Pesquisar bem, categoria ou local...') +
-    tbl('tPat',['Código','Bem','Categoria','Localização','Valor','Estado'],
-      DB.patrimonio.map(p=>[`<b>${p.id}</b>`, p.bem, p.categoria, p.local, KZ(p.valor), selo(p.estado)])))}
-
-  <div style="height:16px"></div>
-  <div class="grid g2">
-    ${card('Bens por Categoria','Distribuição do património',
-      barras(['Informática','Mobiliário','Laboratório','Didáctico','Infra-estrutura'].map(c=>({
-        label:c, value: DB.patrimonio.filter(p=>p.categoria===c).length*100000
-      }))))}
-    ${card('Movimentação de Bens','Entradas, saídas e transferências recentes',
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Total de Bens', DB.patrimonio.length, 'Registados no inventário','b','🏛️') +
+    kpi('Valor Patrimonial', KZ(valor), 'Valor estimado total','g','💰') +
+    kpi('Bom Estado', DB.patrimonio.filter(p=>p.estado==='Bom').length, 'Sem necessidade de intervenção','g','✅') +
+    kpi('A Reparar', DB.patrimonio.filter(p=>p.estado!=='Bom').length, 'Necessitam de manutenção','r','🔧') +
+    '</div>' +
+    card('Inventário de Bens','Equipamentos informáticos, mobiliário, laboratório e material didáctico',
+      '<button class="btn" style="margin-bottom:14px" onclick="toast(\'Novo bem adicionado\',\'➕\')">➕ Registar Bem</button>' +
+      busca('tPat','Pesquisar bem, categoria ou local...') +
+      tbl('tPat',['Código','Bem','Categoria','Localização','Valor','Estado'], rows)) +
+    '<div style="height:16px"></div>' +
+    '<div class="grid g2">' +
+    card('Bens por Categoria','Distribuição do património', barras(catBens)) +
+    card('Movimentação de Bens','Entradas, saídas e transferências recentes',
       tbl('tMov',['Data','Bem','Tipo','Origem','Destino','Responsável'],[
         ['21/10/2025','Computador Desktop','Entrada','Fornecedor','Sala de Informática','Administração'],
         ['22/10/2025','Projector','Transferência','Sala 3','Sala 9','Manutenção'],
         ['24/10/2025','Cadeiras (10)','Saída','Armazém','Sala 12','Auxiliar'],
         ['25/10/2025','Microscópio','Entrada','Fornecedor','Laboratório','Administração'],
         ['27/10/2025','Impressora','Transferência','Secretaria','Direcção','Manutenção']
-      ]))}
-  </div>`;
+      ])) +
+    '</div>';
 };
 
+/* ---------- 11. INFRA-ESTRUTURAS ---------- */
 VIEWS.infra = function(){
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Salas e Espaços', 24, 'Salas, laboratórios e biblioteca','b','🏫')}
-    ${kpi('Avarias Abertas', DB.avarias.filter(a=>a.estado!=='Concluído').length, 'Por resolver','r','⚠️')}
-    ${kpi('Ordens de Serviço', 18, 'Este mês','b','📋')}
-    ${kpi('Manutenções Concluídas', 34, 'Este trimestre','g','✅')}
-  </div>
+  const rowsAv = DB.avarias.map(a=>[
+    '<b>'+a.id+'</b>', a.local, a.equipamento, a.descricao, selo(a.prioridade), selo(a.estado)
+  ]);
+  const monitor = '<div class="list">' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">❄️</div><div><b>Ar Condicionado</b><p>18 unidades · 15 operacionais</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">⚡</div><div><b>Geradores</b><p>2 unidades · 1 com falha</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🌐</div><div><b>Rede Informática</b><p>Bloco B com interrupção parcial</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">💧</div><div><b>Sistema de Água</b><p>Operacional em todos os blocos</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">🔌</div><div><b>Instalação Eléctrica</b><p>Sem ocorrências</p></div></div>' +
+    '</div>';
 
-  <div class="grid g2" style="margin-bottom:16px">
-    ${card('Registo de Avarias','Ocorrências reportadas nas instalações',
-      `<button class="btn" style="margin-bottom:14px" onclick="toast('Nova avaria registada','🔧')">➕ Registar Avaria</button>` +
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Salas e Espaços', 24, 'Salas, laboratórios e biblioteca','b','🏫') +
+    kpi('Avarias Abertas', DB.avarias.filter(a=>a.estado!=='Concluído').length, 'Por resolver','r','⚠️') +
+    kpi('Ordens de Serviço', 18, 'Este mês','b','📋') +
+    kpi('Manutenções Concluídas', 34, 'Este trimestre','g','✅') +
+    '</div>' +
+    '<div class="grid g2" style="margin-bottom:16px">' +
+    card('Registo de Avarias','Ocorrências reportadas nas instalações',
+      '<button class="btn" style="margin-bottom:14px" onclick="toast(\'Nova avaria registada\',\'🔧\')">➕ Registar Avaria</button>' +
       busca('tAv2','Pesquisar avaria...') +
-      tbl('tAv2',['Código','Local','Equipamento','Descrição','Prioridade','Estado'],
-        DB.avarias.map(a=>[`<b>${a.id}</b>`, a.local, a.equipamento, a.descricao, selo(a.prioridade), selo(a.estado)])))}
-    ${card('Infra-estruturas Monitorizadas','Equipamentos e sistemas sob manutenção',
-      `<div class="list">
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">❄️</div><div><b>Ar Condicionado</b><p>18 unidades · 15 operacionais</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">⚡</div><div><b>Geradores</b><p>2 unidades · 1 com falha de arranque</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🌐</div><div><b>Rede Informática</b><p>Bloco B com interrupção parcial</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">💧</div><div><b>Sistema de Água</b><p>Operacional em todos os blocos</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">🔌</div><div><b>Instalação Eléctrica</b><p>Sem ocorrências registadas</p></div></div>
-      </div>`)}
-  </div>
-
-  ${card('Ordens de Serviço','Histórico de manutenção preventiva e correctiva',
-    busca('tOs','Pesquisar ordem de serviço...') +
-    tbl('tOs',['Nº Ordem','Descrição','Local','Técnico','Abertura','Conclusão','Estado'],[
-      ['OS-201','Reparação de ar condicionado','Sala 7','Equipa Interna','18/10/2025','—', selo('Em curso')],
-      ['OS-202','Substituição de lente de microscópio','Laboratório','Fornecedor Externo','19/10/2025','—', selo('Pendente')],
-      ['OS-203','Reconfiguração de rede Bloco B','Bloco B','Equipa TI','20/10/2025','—', selo('Em curso')],
-      ['OS-204','Substituição de lâmpadas','Biblioteca','Equipa Interna','15/10/2025','17/10/2025', selo('Concluído')],
-      ['OS-205','Reparação do gerador principal','Casa do Gerador','Fornecedor Externo','21/10/2025','—', selo('Em curso')],
-      ['OS-206','Pintura da Sala 12','Sala 12','Equipa Interna','10/10/2025','14/10/2025', selo('Concluído')]
-    ]))}
-  `;
+      tbl('tAv2',['Código','Local','Equipamento','Descrição','Prioridade','Estado'], rowsAv)) +
+    card('Infra-estruturas Monitorizadas','Equipamentos e sistemas sob manutenção', monitor) +
+    '</div>' +
+    card('Ordens de Serviço','Histórico de manutenção preventiva e correctiva',
+      busca('tOs','Pesquisar ordem de serviço...') +
+      tbl('tOs',['Nº Ordem','Descrição','Local','Técnico','Abertura','Conclusão','Estado'],[
+        ['OS-201','Reparação de ar condicionado','Sala 7','Equipa Interna','18/10/2025','—', selo('Em curso')],
+        ['OS-202','Substituição de lente','Laboratório','Fornecedor Externo','19/10/2025','—', selo('Pendente')],
+        ['OS-203','Reconfiguração de rede','Bloco B','Equipa TI','20/10/2025','—', selo('Em curso')],
+        ['OS-204','Substituição de lâmpadas','Biblioteca','Equipa Interna','15/10/2025','17/10/2025', selo('Concluído')],
+        ['OS-205','Reparação do gerador','Casa do Gerador','Fornecedor Externo','21/10/2025','—', selo('Em curso')],
+        ['OS-206','Pintura da Sala 12','Sala 12','Equipa Interna','10/10/2025','14/10/2025', selo('Concluído')]
+      ]));
 };
 
+/* ---------- 12. TRANSPORTE ---------- */
 VIEWS.transporte = function(){
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Viaturas', DB.viaturas.length, DB.viaturas.filter(v=>v.estado==='Operacional').length+' operacionais','b','🚌')}
-    ${kpi('Motoristas', 6, 'Pessoal habilitado','b','🧑‍✈️')}
-    ${kpi('Rotas Activas', 8, 'Cobertura urbana e periurbana','b','🗺️')}
-    ${kpi('Alunos Transportados', 312, 'Passageiros diários','g','🎒')}
-  </div>
+  const rowsV = DB.viaturas.map(v=>[
+    '<b>'+v.id+'</b>', v.matricula, v.modelo, v.capacidade+' lugares',
+    v.combustivel, v.consumo+' L/100km', selo(v.estado)
+  ]);
+  const rowsM = [];
+  for(let i=0;i<6;i++){
+    rowsM.push(['<b>MT-'+(10+i)+'</b>',
+      rnd(NOMES)+' '+rnd(SOBRES)+' '+rnd(SOBRES),
+      'Categoria '+rnd(['B','C','D']),
+      'VTR-0'+(i%4+1),
+      'Rota '+ri(1,8),
+      '+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999),
+      selo('Activo')]);
+  }
+  const consComb = DB.viaturas.map(v=>({label:v.id, value: ri(180,420)*1000}));
 
-  <div class="grid g2" style="margin-bottom:16px">
-    ${card('Cadastro de Viaturas','Frota da instituição',
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Viaturas', DB.viaturas.length, DB.viaturas.filter(v=>v.estado==='Operacional').length+' operacionais','b','🚌') +
+    kpi('Motoristas', 6, 'Pessoal habilitado','b','🧑‍✈️') +
+    kpi('Rotas Activas', 8, 'Cobertura urbana e periurbana','b','🗺️') +
+    kpi('Alunos Transportados', 312, 'Passageiros diários','g','🎒') +
+    '</div>' +
+    '<div class="grid g2" style="margin-bottom:16px">' +
+    card('Cadastro de Viaturas','Frota da instituição',
       busca('tVtr','Pesquisar viatura...') +
-      tbl('tVtr',['Código','Matrícula','Modelo','Capacidade','Combustível','Consumo','Estado'],
-        DB.viaturas.map(v=>[`<b>${v.id}</b>`, v.matricula, v.modelo, v.capacidade+' lugares',
-          v.combustivel, v.consumo+' L/100km', selo(v.estado)])))}
-    ${card('Motoristas','Pessoal afecto ao transporte escolar',
+      tbl('tVtr',['Código','Matrícula','Modelo','Capacidade','Combustível','Consumo','Estado'], rowsV)) +
+    card('Motoristas','Pessoal afecto ao transporte escolar',
       busca('tMot','Pesquisar motorista...') +
-      tbl('tMot',['Nº','Nome','Carta','Viatura','Rota','Contacto','Estado'],
-        Array.from({length:6},(_,i)=>[
-          `<b>MT-${10+i}</b>`, rnd(NOMES)+' '+rnd(SOBRES)+' '+rnd(SOBRES),
-          'Categoria '+rnd(['B','C','D']), 'VTR-0'+(i%4+1),
-          'Rota '+ri(1,8), '+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999), selo('Activo')
-        ])))}
-  </div>
-
-  ${card('Rotas e Passageiros','Percurso, horários e ocupação',
-    busca('tRot','Pesquisar rota ou bairro...') +
-    tbl('tRot',['Rota','Percurso','Horário Ida','Horário Volta','Alunos','Viatura','Ocupação'],[
-      ['R-01','Bairro Novo – Colégio','06:15','17:30', 42,'VTR-01','<span class="tag warn">84%</span>'],
-      ['R-02','Cazenga – Colégio','06:00','17:30', 38,'VTR-02','<span class="tag warn">76%</span>'],
-      ['R-03','Maianga – Colégio','06:30','17:15', 30,'VTR-04','<span class="tag ok">60%</span>'],
-      ['R-04','Viana – Colégio','05:45','17:45', 44,'VTR-01','<span class="tag dg">88%</span>'],
-      ['R-05','Talatona – Colégio','06:20','17:20', 35,'VTR-02','<span class="tag ok">70%</span>'],
-      ['R-06','Kilamba – Colégio','06:10','17:25', 40,'VTR-04','<span class="tag warn">80%</span>'],
-      ['R-07','Rangel – Colégio','06:25','17:35', 28,'VTR-02','<span class="tag ok">56%</span>'],
-      ['R-08','Golfe – Colégio','06:35','17:10', 26,'VTR-01','<span class="tag ok">52%</span>']
-    ]))}
-
-  <div style="height:16px"></div>
-  <div class="grid g2">
-    ${card('Controlo de Combustível','Consumo mensal por viatura',
-      barras(DB.viaturas.map(v=>({label:v.id, value: ri(180,420)*1000}))))}
-    ${card('Manutenção das Viaturas','Histórico de intervenções',
+      tbl('tMot',['Nº','Nome','Carta','Viatura','Rota','Contacto','Estado'], rowsM)) +
+    '</div>' +
+    card('Rotas e Passageiros','Percurso, horários e ocupação',
+      busca('tRot','Pesquisar rota ou bairro...') +
+      tbl('tRot',['Rota','Percurso','Horário Ida','Horário Volta','Alunos','Viatura','Ocupação'],[
+        ['R-01','Bairro Novo – Colégio','06:15','17:30', 42,'VTR-01','<span class="tag warn">84%</span>'],
+        ['R-02','Cazenga – Colégio','06:00','17:30', 38,'VTR-02','<span class="tag warn">76%</span>'],
+        ['R-03','Maianga – Colégio','06:30','17:15', 30,'VTR-04','<span class="tag ok">60%</span>'],
+        ['R-04','Viana – Colégio','05:45','17:45', 44,'VTR-01','<span class="tag dg">88%</span>'],
+        ['R-05','Talatona – Colégio','06:20','17:20', 35,'VTR-02','<span class="tag ok">70%</span>'],
+        ['R-06','Kilamba – Colégio','06:10','17:25', 40,'VTR-04','<span class="tag warn">80%</span>'],
+        ['R-07','Rangel – Colégio','06:25','17:35', 28,'VTR-02','<span class="tag ok">56%</span>'],
+        ['R-08','Golfe – Colégio','06:35','17:10', 26,'VTR-01','<span class="tag ok">52%</span>']
+      ])) +
+    '<div style="height:16px"></div>' +
+    '<div class="grid g2">' +
+    card('Controlo de Combustível','Consumo mensal por viatura', barras(consComb)) +
+    card('Manutenção das Viaturas','Histórico de intervenções',
       tbl('tMnt',['Viatura','Intervenção','Data','Custo','Estado'],[
         ['VTR-01','Revisão geral','12/09/2025', KZ(320000), selo('Concluído')],
         ['VTR-02','Substituição de travões','28/09/2025', KZ(185000), selo('Concluído')],
         ['VTR-03','Reparação de motor','18/10/2025', KZ(640000), selo('Em curso')],
         ['VTR-04','Troca de óleo e filtros','05/10/2025', KZ(95000), selo('Concluído')],
         ['VTR-01','Alinhamento e balanceamento','20/10/2025', KZ(72000), selo('Concluído')]
-      ]))}
-  </div>`;
+      ])) +
+    '</div>';
 };
 
+/* ---------- 13. CANTINA ---------- */
 VIEWS.cantina = function(){
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Refeições/Dia', 486, 'Almoços e lanches servidos','b','🍲')}
-    ${kpi('Receita Mensal', KZ(2_340_000), 'Pagamentos de cantina','g','💰')}
-    ${kpi('Custo Operacional', KZ(1_620_000), 'Matérias-primas e pessoal','w','📉')}
-    ${kpi('Stock Alimentar', '82%', 'Nível de armazém','b','📦')}
-  </div>
+  const consumo = [
+    {label:'Almoços', value: 486},
+    {label:'Lanches', value: 312},
+    {label:'Bebidas', value: 274},
+    {label:'Sobremesas', value: 190}
+  ];
+  const custos = '<div class="legend" style="margin-top:0">' +
+    '<span><i class="dot" style="background:#1b7fbf"></i> Matérias-primas: <b>'+KZ(980000)+'</b></span>' +
+    '<span><i class="dot" style="background:#16a34a"></i> Pessoal: <b>'+KZ(420000)+'</b></span>' +
+    '<span><i class="dot" style="background:#f59e0b"></i> Energia e água: <b>'+KZ(130000)+'</b></span>' +
+    '<span><i class="dot" style="background:#dc2626"></i> Manutenção: <b>'+KZ(90000)+'</b></span>' +
+    '</div>' + donut(69,'Margem');
 
-  <div class="grid g2" style="margin-bottom:16px">
-    ${card('Cardápio Semanal','Ementa programada',
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Refeições/Dia', 486, 'Almoços e lanches servidos','b','🍲') +
+    kpi('Receita Mensal', KZ(2340000), 'Pagamentos de cantina','g','💰') +
+    kpi('Custo Operacional', KZ(1620000), 'Matérias-primas e pessoal','w','📉') +
+    kpi('Stock Alimentar','82%','Nível de armazém','b','📦') +
+    '</div>' +
+    '<div class="grid g2" style="margin-bottom:16px">' +
+    card('Cardápio Semanal','Ementa programada',
       tbl('tCar',['Dia','Prato Principal','Acompanhamento','Bebida','Sobremesa'],[
         ['Segunda','Arroz de frango','Salada de tomate','Sumo natural','Fruta'],
         ['Terça','Feijão com carne','Arroz branco','Água','Gelatina'],
         ['Quarta','Funje com peixe','Feijão de óleo de palma','Sumo','Fruta'],
         ['Quinta','Massa com galinha','Legumes salteados','Água','Bolo simples'],
         ['Sexta','Arroz de peixe','Salada mista','Sumo natural','Fruta']
-      ]))}
-    ${card('Consumo e Pagamentos','Controlo diário',
-      barras([{label:'Almoços', value: 486},{label:'Lanches', value: 312},
-              {label:'Bebidas', value: 274},{label:'Sobremesas', value: 190}]))}
-  </div>
-
-  <div class="grid g3">
-    ${card('Stocks Alimentares','Níveis actuais de armazém',
+      ])) +
+    card('Consumo e Pagamentos','Controlo diário', barras(consumo)) +
+    '</div>' +
+    '<div class="grid g3">' +
+    card('Stocks Alimentares','Níveis actuais de armazém',
       busca('tStk','Pesquisar produto...') +
       tbl('tStk',['Produto','Quantidade','Unidade','Mínimo','Estado'],[
         ['Arroz','420','kg','150', selo('Bom')],
@@ -1256,284 +1310,291 @@ VIEWS.cantina = function(){
         ['Frango','145','kg','80', selo('Bom')],
         ['Peixe','62','kg','70', selo('Pendente')],
         ['Farinha','310','kg','100', selo('Bom')]
-      ])))}
-    ${card('Fornecedores','Entidades fornecedoras',
+      ])) +
+    card('Fornecedores','Entidades fornecedoras',
       tbl('tFor',['Fornecedor','Produto','Contacto','Prazo','Avaliação'],[
         ['AgroKwanza Lda','Frescos','+244 923 111 222','48h','⭐ 4.6'],
         ['Distribuidora Sul','Mercearia','+244 924 333 444','72h','⭐ 4.2'],
         ['Pescas Angola','Peixe','+244 925 555 666','24h','⭐ 4.8'],
         ['Padaria Central','Pão','+244 926 777 888','12h','⭐ 4.4']
-      ]))}
-    ${card('Custos Operacionais','Repartição mensal',
-      `<div class="legend" style="margin-top:0">
-        <span><i class="dot" style="background:#1b7fbf"></i> Matérias-primas: <b>${KZ(980000)}</b></span>
-        <span><i class="dot" style="background:#16a34a"></i> Pessoal: <b>${KZ(420000)}</b></span>
-        <span><i class="dot" style="background:#f59e0b"></i> Energia e água: <b>${KZ(130000)}</b></span>
-        <span><i class="dot" style="background:#dc2626"></i> Manutenção: <b>${KZ(90000)}</b></span>
-      </div>` +
-      donut(69,'Margem'))}
-  </div>`;
+      ])) +
+    card('Custos Operacionais','Repartição mensal', custos) +
+    '</div>';
 };
 
+/* ---------- 14. SAÚDE ---------- */
 VIEWS.saude = function(){
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Fichas Médicas', DB.alunos.length, 'Alunos com processo de saúde','b','🩺')}
-    ${kpi('Ocorrências no Mês', DB.ocorrencias.length, 'Atendimentos registados','w','⚕️')}
-    ${kpi('Alergias Registadas', 34, 'Alunos com alergias conhecidas','r','⚠️')}
-    ${kpi('Vacinação em Dia', '94%', 'Cobertura vacinal','g','💉')}
-  </div>
+  const rowsOc = DB.ocorrencias.map(o=>[
+    '<b>'+o.id+'</b>', o.aluno, o.tipo, selo(o.gravidade), o.data, selo(o.estado)
+  ]);
+  const apoio = '<div class="list">' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">🎓</div><div><b>Bolsas de Estudo</b><p>42 alunos beneficiários</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🍲</div><div><b>Cantina Social</b><p>86 alunos com refeição gratuita</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">📚</div><div><b>Material Escolar</b><p>58 kits distribuídos</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🚌</div><div><b>Transporte Subsidiado</b><p>24 alunos com isenção</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">👕</div><div><b>Uniforme Escolar</b><p>31 alunos apoiados</p></div></div>' +
+    '</div>';
 
-  <div class="grid g2" style="margin-bottom:16px">
-    ${card('Ocorrências Médicas','Registo e encaminhamento',
+  const rowsFm = DB.alunos.slice(0,30).map(a=>[
+    a.nome, a.classe, rnd(['A+','O+','B+','AB+','O-']),
+    rnd(['Nenhuma','Poeira','Amendoim','Lactose','Penicilina']),
+    rnd([selo('Activo'), selo('Pendente')]),
+    rnd(['Nenhuma','Asma','Diabetes','Anemia']),
+    '+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999)
+  ]);
+
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Fichas Médicas', DB.alunos.length, 'Alunos com processo de saúde','b','🩺') +
+    kpi('Ocorrências no Mês', DB.ocorrencias.length, 'Atendimentos registados','w','⚕️') +
+    kpi('Alergias Registadas', 34, 'Alunos com alergias conhecidas','r','⚠️') +
+    kpi('Vacinação em Dia','94%','Cobertura vacinal','g','💉') +
+    '</div>' +
+    '<div class="grid g2" style="margin-bottom:16px">' +
+    card('Ocorrências Médicas','Registo e encaminhamento',
       busca('tOc','Pesquisar ocorrência...') +
-      tbl('tOc',['Código','Aluno','Tipo','Gravidade','Data','Estado'],
-        DB.ocorrencias.map(o=>[`<b>${o.id}</b>`, o.aluno, o.tipo, selo(o.gravidade), o.data, selo(o.estado)])))}
-    ${card('Apoio Social Escolar','Programas de apoio a alunos carenciados',
-      `<div class="list">
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">🎓</div><div><b>Bolsas de Estudo</b><p>42 alunos beneficiários</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🍲</div><div><b>Cantina Social</b><p>86 alunos com refeição gratuita</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">📚</div><div><b>Material Escolar</b><p>58 kits distribuídos este ano</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🚌</div><div><b>Transporte Subsidiado</b><p>24 alunos com isenção total</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">👕</div><div><b>Uniforme Escolar</b><p>31 alunos apoiados</p></div></div>
-      </div>`)}
-  </div>
-
-  ${card('Fichas Médicas dos Alunos','Informação clínica relevante',
-    busca('tFm','Pesquisar aluno...') +
-    tbl('tFm',['Aluno','Classe','Grupo Sanguíneo','Alergias','Vacinação','Condição Especial','Contacto de Emergência'],
-      DB.alunos.slice(0,30).map(a=>[
-        a.nome, a.classe, rnd(['A+','O+','B+','AB+','O-']),
-        rnd(['Nenhuma','Poeira','Amendoim','Lactose','Penicilina']),
-        rnd([selo('Activo'), selo('Pendente')]),
-        rnd(['Nenhuma','Asma','Diabetes','Anemia']),
-        '+244 9'+ri(10,99)+' '+ri(100,999)+' '+ri(100,999)
-      ])))}
-  `;
+      tbl('tOc',['Código','Aluno','Tipo','Gravidade','Data','Estado'], rowsOc)) +
+    card('Apoio Social Escolar','Programas de apoio a alunos carenciados', apoio) +
+    '</div>' +
+    card('Fichas Médicas dos Alunos','Informação clínica relevante',
+      busca('tFm','Pesquisar aluno...') +
+      tbl('tFm',['Aluno','Classe','Grupo Sanguíneo','Alergias','Vacinação','Condição Especial','Contacto de Emergência'], rowsFm));
 };
 
+/* ---------- 15. RELATÓRIOS ---------- */
 VIEWS.relatorios = function(){
   const aprov = Math.round(DB.alunos.filter(a=>a.media>=10).length/DB.alunos.length*100);
   const total = DB.pagamentos.reduce((s,p)=>s+p.valor,0);
   const divida = DB.alunos.reduce((s,a)=>s+a.divida,0);
+  const inad = ((divida/(total+divida))*100).toFixed(1);
 
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Relatórios Disponíveis', 24, 'Académicos, financeiros e administrativos','b','📈')}
-    ${kpi('Taxa de Aprovação', aprov+'%', 'Ano lectivo 2025','g','🏆')}
-    ${kpi('Receita Total', KZ(total), 'Acumulado do ano','g','💰')}
-    ${kpi('Inadimplência', ((divida/(total+divida))*100).toFixed(1)+'%', KZ(divida)+' em dívida','r','⚠️')}
-  </div>
+  const academ = ['Aproveitamento escolar','Taxas de aprovação','Taxas de reprovação','Frequência escolar','Médias por disciplina','Resultados por turma'];
+  const fin = ['Receitas por classe','Receitas por mês','Fluxo de caixa','Inadimplência','Demonstrativo de receitas','Contas a pagar'];
+  const adm = ['Recursos Humanos','Património e Inventário','Biblioteca','Transporte Escolar','Cantina','Manutenção'];
 
-  <div class="grid g3" style="margin-bottom:16px">
-    ${card('📚 Relatórios Académicos','Indicadores de ensino',
-      `<div class="list">
-        ${['Aproveitamento escolar','Taxas de aprovação','Taxas de reprovação','Frequência escolar','Médias por disciplina','Resultados por turma']
-          .map(r=>`<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📄</div>
-            <div><b>${r}</b><p>Relatório consolidado</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Relatório gerado','📄')">Gerar</button></div>`).join('')}
-      </div>`)}
-    ${card('💰 Relatórios Financeiros','Situação económica',
-      `<div class="list">
-        ${['Receitas por classe','Receitas por mês','Fluxo de caixa','Inadimplência','Demonstrativo de receitas','Contas a pagar']
-          .map(r=>`<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">💵</div>
-            <div><b>${r}</b><p>Relatório financeiro</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Relatório gerado','💵')">Gerar</button></div>`).join('')}
-      </div>`)}
-    ${card('🗂️ Relatórios Administrativos','Gestão institucional',
-      `<div class="list">
-        ${['Recursos Humanos','Património e Inventário','Biblioteca','Transporte Escolar','Cantina','Manutenção']
-          .map(r=>`<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">📋</div>
-            <div><b>${r}</b><p>Relatório administrativo</p></div>
-            <button class="btn sm ghost" style="margin-left:auto" onclick="toast('Relatório gerado','📋')">Gerar</button></div>`).join('')}
-      </div>`)}
-  </div>
+  let listaAcad = '<div class="list">';
+  for(let i=0;i<academ.length;i++){
+    listaAcad += '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">📄</div><div><b>'+academ[i]+'</b><p>Relatório consolidado</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Relatório gerado\',\'📄\')">Gerar</button></div>';
+  }
+  listaAcad += '</div>';
 
-  <div class="grid g2">
-    ${card('Evolução da Receita','Comparativo mensal 2025', barras(DB.receitaMes))}
-    ${card('Indicadores Globais','Painel resumo do colégio',
-      `<div class="legend" style="margin-top:0">
-        <span><i class="dot" style="background:#1b7fbf"></i> Total de alunos: <b>${DB.alunos.length}</b></span>
-        <span><i class="dot" style="background:#16a34a"></i> Taxa de aprovação: <b>${aprov}%</b></span>
-        <span><i class="dot" style="background:#f59e0b"></i> Frequência média: <b>${Math.round(DB.alunos.reduce((s,a)=>s+a.freq,0)/DB.alunos.length)}%</b></span>
-        <span><i class="dot" style="background:#dc2626"></i> Alunos com dívida: <b>${DB.alunos.filter(a=>a.divida>0).length}</b></span>
-        <span><i class="dot" style="background:#0f4c81"></i> Professores activos: <b>${DB.professores.filter(p=>p.estado==='Activo').length}</b></span>
-        <span><i class="dot" style="background:#7c3aed"></i> Colaboradores: <b>${DB.funcionarios.length}</b></span>
-        <span><i class="dot" style="background:#0891b2"></i> Títulos na biblioteca: <b>${DB.livros.length}</b></span>
-        <span><i class="dot" style="background:#be185d"></i> Bens inventariados: <b>${DB.patrimonio.length}</b></span>
-      </div>`)}
-  </div>`;
+  let listaFin = '<div class="list">';
+  for(let i=0;i<fin.length;i++){
+    listaFin += '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">💵</div><div><b>'+fin[i]+'</b><p>Relatório financeiro</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Relatório gerado\',\'💵\')">Gerar</button></div>';
+  }
+  listaFin += '</div>';
+
+  let listaAdm = '<div class="list">';
+  for(let i=0;i<adm.length;i++){
+    listaAdm += '<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">📋</div><div><b>'+adm[i]+'</b><p>Relatório administrativo</p></div><button class="btn sm ghost" style="margin-left:auto" onclick="toast(\'Relatório gerado\',\'📋\')">Gerar</button></div>';
+  }
+  listaAdm += '</div>';
+
+  const indicadores = '<div class="legend" style="margin-top:0">' +
+    '<span><i class="dot" style="background:#1b7fbf"></i> Total de alunos: <b>'+DB.alunos.length+'</b></span>' +
+    '<span><i class="dot" style="background:#16a34a"></i> Taxa de aprovação: <b>'+aprov+'%</b></span>' +
+    '<span><i class="dot" style="background:#f59e0b"></i> Frequência média: <b>'+Math.round(DB.alunos.reduce((s,a)=>s+a.freq,0)/DB.alunos.length)+'%</b></span>' +
+    '<span><i class="dot" style="background:#dc2626"></i> Alunos com dívida: <b>'+DB.alunos.filter(a=>a.divida>0).length+'</b></span>' +
+    '<span><i class="dot" style="background:#0f4c81"></i> Professores activos: <b>'+DB.professores.filter(p=>p.estado==='Activo').length+'</b></span>' +
+    '<span><i class="dot" style="background:#7c3aed"></i> Colaboradores: <b>'+DB.funcionarios.length+'</b></span>' +
+    '<span><i class="dot" style="background:#0891b2"></i> Títulos na biblioteca: <b>'+DB.livros.length+'</b></span>' +
+    '<span><i class="dot" style="background:#be185d"></i> Bens inventariados: <b>'+DB.patrimonio.length+'</b></span>' +
+    '</div>';
+
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Relatórios Disponíveis', 24, 'Académicos, financeiros e administrativos','b','📈') +
+    kpi('Taxa de Aprovação', aprov+'%', 'Ano lectivo 2025','g','🏆') +
+    kpi('Receita Total', KZ(total), 'Acumulado do ano','g','💰') +
+    kpi('Inadimplência', inad+'%', KZ(divida)+' em dívida','r','⚠️') +
+    '</div>' +
+    '<div class="grid g3" style="margin-bottom:16px">' +
+    card('📚 Relatórios Académicos','Indicadores de ensino', listaAcad) +
+    card('💰 Relatórios Financeiros','Situação económica', listaFin) +
+    card('🗂️ Relatórios Administrativos','Gestão institucional', listaAdm) +
+    '</div>' +
+    '<div class="grid g2">' +
+    card('Evolução da Receita','Comparativo mensal 2025', barras(DB.receitaMes)) +
+    card('Indicadores Globais','Painel resumo do colégio', indicadores) +
+    '</div>';
 };
 
+/* ---------- 16. SEGURANÇA ---------- */
 VIEWS.seguranca = function(){
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    ${kpi('Registos de Auditoria', DB.auditoria.length, 'Últimas operações','b','🔍')}
-    ${kpi('Acessos Hoje', 34, 'Sessões activas','g','🔑')}
-    ${kpi('Último Backup', 'Hoje, 02:00', 'Automático · Bem-sucedido','g','💾')}
-    ${kpi('Alertas de Segurança', 2, 'Tentativas falhadas','w','⚠️')}
-  </div>
+  const backup = '<div class="list">' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Backup automático diário</b><p>Última execução: hoje às 02:00</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Backup semanal completo</b><p>Domingo às 01:00 · Retenção 12 semanas</p></div></div>' +
+    '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">☁️</div><div><b>Backup em nuvem</b><p>Sincronização contínua activa</p></div></div>' +
+    '</div>' +
+    '<button class="btn ok" style="margin-top:14px" onclick="toast(\'Backup executado\',\'💾\')">💾 Executar Backup Manual</button>';
 
-  <div class="grid g3" style="margin-bottom:16px">
-    ${card('💾 Backup e Recuperação','Protecção dos dados institucionais',
-      `<div class="list">
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Backup automático diário</b><p>Última execução: hoje às 02:00</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Backup semanal completo</b><p>Domingo às 01:00 · Retenção 12 semanas</p></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">☁️</div><div><b>Backup em nuvem</b><p>Sincronização contínua activa</p></div></div>
-      </div>
-      <button class="btn ok" style="margin-top:14px" onclick="toast('Backup manual executado com sucesso','💾')">💾 Executar Backup Manual</button>`)}
-    ${card('🔐 Políticas de Segurança','Configurações activas',
-      `<div class="toggle"><span>Autenticação de dois factores</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>Bloqueio após 5 tentativas</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>Expiração de sessão (30 min)</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>Registo obrigatório de auditoria</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>
-       <div class="toggle"><span>Criptografia de dados sensíveis</span><div class="sw on" onclick="this.classList.toggle('on')"></div></div>`)}
-    ${card('👁️ Acessos por Perfil','Sessões activas no sistema',
-      tbl('tAc',['Perfil','Utilizadores','Sessões Activas','Último Acesso'],[
-        ['Director Geral', 1, 1,'Hoje 08:12'],
-        ['Secretária', 4, 2,'Hoje 09:45'],
-        ['Tesoureiro', 2, 1,'Hoje 08:30'],
-        ['Professor', 34, 12,'Hoje 07:55'],
-        ['Bibliotecário', 1, 1,'Ontem 16:20'],
-        ['Administrador', 2, 2,'Hoje 06:00']
-      ]))}
-  </div>
+  const politicas = '<div class="toggle"><span>Autenticação de dois factores</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>Bloqueio após 5 tentativas</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>Expiração de sessão (30 min)</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>Registo obrigatório de auditoria</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>' +
+    '<div class="toggle"><span>Criptografia de dados sensíveis</span><div class="sw on" onclick="this.classList.toggle(\'on\')"></div></div>';
 
-  ${card('Histórico de Auditoria','Registo completo de alterações e acessos',
-    busca('tAud','Pesquisar utilizador, acção ou módulo...') +
-    tbl('tAud',['Código','Utilizador','Acção','Módulo','Endereço IP','Data/Hora'],
-      DB.auditoria.slice(-40).reverse().map(l=>[
-        `<b>${l.id}</b>`, l.utilizador, l.acao, `<span class="tag info">${l.modulo}</span>`, l.ip, l.data
-      ])))}
-  `;
+  const rowsAc = [
+    ['Director Geral', 1, 1,'Hoje 08:12'],
+    ['Secretária', 4, 2,'Hoje 09:45'],
+    ['Tesoureiro', 2, 1,'Hoje 08:30'],
+    ['Professor', 34, 12,'Hoje 07:55'],
+    ['Bibliotecário', 1, 1,'Ontem 16:20'],
+    ['Administrador', 2, 2,'Hoje 06:00']
+  ];
+
+  const rowsAud = DB.auditoria.slice(-40).reverse().map(l=>[
+    '<b>'+l.id+'</b>', l.utilizador, l.acao,
+    '<span class="tag info">'+l.modulo+'</span>', l.ip, l.data
+  ]);
+
+  return '<div class="grid g4" style="margin-bottom:16px">' +
+    kpi('Registos de Auditoria', DB.auditoria.length, 'Últimas operações','b','🔍') +
+    kpi('Acessos Hoje', 34, 'Sessões activas','g','🔑') +
+    kpi('Último Backup','Hoje, 02:00','Automático · Bem-sucedido','g','💾') +
+    kpi('Alertas de Segurança', 2, 'Tentativas falhadas','w','⚠️') +
+    '</div>' +
+    '<div class="grid g3" style="margin-bottom:16px">' +
+    card('💾 Backup e Recuperação','Protecção dos dados institucionais', backup) +
+    card('🔐 Políticas de Segurança','Configurações activas', politicas) +
+    card('👁️ Acessos por Perfil','Sessões activas no sistema',
+      tbl('tAc',['Perfil','Utilizadores','Sessões Activas','Último Acesso'], rowsAc)) +
+    '</div>' +
+    card('Histórico de Auditoria','Registo completo de alterações e acessos',
+      busca('tAud','Pesquisar utilizador, acção ou módulo...') +
+      tbl('tAud',['Código','Utilizador','Acção','Módulo','Endereço IP','Data/Hora'], rowsAud));
 };
 
+/* ---------- 17. ADMINISTRAÇÃO ---------- */
 VIEWS.admin = function(){
   const chip = estado.chips.admin || 'institucional';
-  let corpo='';
+  let corpo = '';
 
   if(chip==='institucional'){
-    corpo = `<div class="grid g2">
-      ${card('Configuração Institucional','Dados gerais do colégio',
-        `<div class="form-grid">
-          <div class="field"><label>Nome da Instituição</label><input value="Colégio GEST-WILDAKA"></div>
-          <div class="field"><label>NIF</label><input value="5417896320"></div>
-          <div class="field"><label>Endereço</label><input value="Rua das Acácias, nº 42 — Luanda"></div>
-          <div class="field"><label>Telefone</label><input value="+244 923 000 111"></div>
-          <div class="field"><label>E-mail</label><input value="geral@gestwildaka.ao"></div>
-          <div class="field"><label>Ano Lectivo</label><input value="2025 / 2026"></div>
-        </div>
-        <button class="btn" style="margin-top:16px" onclick="toast('Configuração institucional guardada','⚙️')">💾 Guardar Configuração</button>`)}
-      ${card('Parâmetros Académicos','Classes, turmas e taxas',
-        `<div class="form-grid">
-          <div class="field"><label>Nº de Classes</label><input value="12"></div>
-          <div class="field"><label>Turmas por Classe</label><input value="3 (A, B, C)"></div>
-          <div class="field"><label>Taxa de Matrícula (Kz)</label><input value="25000"></div>
-          <div class="field"><label>Propina Mensal (Kz)</label><input value="15000"></div>
-          <div class="field"><label>Multa por Atraso (Kz)</label><input value="2500"></div>
-          <div class="field"><label>Escala de Avaliação</label><input value="0 – 20 valores"></div>
-        </div>
-        <button class="btn" style="margin-top:16px" onclick="toast('Parâmetros académicos actualizados','⚙️')">💾 Guardar Parâmetros</button>`)}
-    </div>`;
+    const cfgInst = '<div class="form-grid">' +
+      '<div class="field"><label>Nome da Instituição</label><input value="Colégio GEST-WILDAKA"></div>' +
+      '<div class="field"><label>NIF</label><input value="5417896320"></div>' +
+      '<div class="field"><label>Endereço</label><input value="Rua das Acácias, nº 42 — Luanda"></div>' +
+      '<div class="field"><label>Telefone</label><input value="+244 923 000 111"></div>' +
+      '<div class="field"><label>E-mail</label><input value="geral@gestwildaka.ao"></div>' +
+      '<div class="field"><label>Ano Lectivo</label><input value="2025 / 2026"></div>' +
+      '</div>' +
+      '<button class="btn" style="margin-top:16px" onclick="toast(\'Configuração guardada\',\'⚙️\')">💾 Guardar Configuração</button>';
+    const cfgAc = '<div class="form-grid">' +
+      '<div class="field"><label>Nº de Classes</label><input value="12"></div>' +
+      '<div class="field"><label>Turmas por Classe</label><input value="3 (A, B, C)"></div>' +
+      '<div class="field"><label>Taxa de Matrícula (Kz)</label><input value="25000"></div>' +
+      '<div class="field"><label>Propina Mensal (Kz)</label><input value="15000"></div>' +
+      '<div class="field"><label>Multa por Atraso (Kz)</label><input value="2500"></div>' +
+      '<div class="field"><label>Escala de Avaliação</label><input value="0 – 20 valores"></div>' +
+      '</div>' +
+      '<button class="btn" style="margin-top:16px" onclick="toast(\'Parâmetros actualizados\',\'⚙️\')">💾 Guardar Parâmetros</button>';
+    corpo = '<div class="grid g2">' +
+      card('Configuração Institucional','Dados gerais do colégio', cfgInst) +
+      card('Parâmetros Académicos','Classes, turmas e taxas', cfgAc) +
+      '</div>';
   }
   else if(chip==='utilizadores'){
+    const rows = [
+      ['Wilda Kambala','wilda.kambala','Director Geral','Hoje 08:12', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['Maria Fernandes','sec.maria','Secretária','Hoje 09:45', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['João Baptista','tes.joao','Tesoureiro','Hoje 08:30', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['António Costa','prof.antonio','Professor','Hoje 07:55', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['Rui Domingos','bib.rui','Bibliotecário','Ontem 16:20', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['Sofia Neto','enf.sofia','Enfermeiro Escolar','Hoje 08:05', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['Paulo Manuel','mot.paulo','Motorista','Hoje 06:30', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['Admin Sistema','admin.sistema','Administrador','Hoje 06:00', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>']
+    ];
     corpo = card('Gestão de Utilizadores','Contas com acesso ao sistema',
-      `<button class="btn" style="margin-bottom:14px" onclick="toast('Formulário de novo utilizador aberto','➕')">➕ Novo Utilizador</button>` +
+      '<button class="btn" style="margin-bottom:14px" onclick="toast(\'Formulário aberto\',\'➕\')">➕ Novo Utilizador</button>' +
       busca('tUsr','Pesquisar utilizador...') +
-      tbl('tUsr',['Nome','Utilizador','Perfil','Último Acesso','Estado','Acção'],[
-        ['Wilda Kambala','wilda.kambala','Director Geral','Hoje 08:12', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['Maria Fernandes','sec.maria','Secretária','Hoje 09:45', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['João Baptista','tes.joao','Tesoureiro','Hoje 08:30', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['António Costa','prof.antonio','Professor','Hoje 07:55', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['Rui Domingos','bib.rui','Bibliotecário','Ontem 16:20', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['Sofia Neto','enf.sofia','Enfermeiro Escolar','Hoje 08:05', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['Paulo Manuel','mot.paulo','Motorista','Hoje 06:30', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>'],
-        ['Admin Sistema','admin.sistema','Administrador do Sistema','Hoje 06:00', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar utilizador\',\'✏️\')">Editar</button>']
-      ]));
+      tbl('tUsr',['Nome','Utilizador','Perfil','Último Acesso','Estado','Acção'], rows));
   }
   else if(chip==='permissoes'){
+    const rows = [];
+    for(const p in PERFIS){
+      const m = PERFIS[p];
+      const acesso = m.includes('*') ? '<span class="tag ok">Acesso Total</span>' : m.length + ' módulos';
+      const nivel = m.includes('*') ? 'Administrador' : (m.length>=6 ? 'Avançado' : (m.length>=4 ? 'Intermédio' : 'Restrito'));
+      rows.push(['<b>'+p+'</b>', acesso, nivel, selo('Activo')]);
+    }
     corpo = card('Perfis de Acesso e Permissões','Controlo de acesso por módulo',
       busca('tPrm','Pesquisar perfil...') +
-      tbl('tPrm',['Perfil','Módulos com Acesso','Nível','Estado'],
-        Object.entries(PERFIS).map(([p,m])=>[
-          `<b>${p}</b>`,
-          m.includes('*') ? '<span class="tag ok">Acesso Total</span>' : m.length+' módulos',
-          m.includes('*') ? 'Administrador' : (m.length>=6?'Avançado':m.length>=4?'Intermédio':'Restrito'),
-          selo('Activo')
-        ])));
+      tbl('tPrm',['Perfil','Módulos com Acesso','Nível','Estado'], rows));
   }
   else {
-    corpo = card('Integrações Externas','Serviços conectados à plataforma',
-      `<div class="list">
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Gateway de SMS</b><p>Envio de notificações a encarregados</p></div>
-          <div class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>WhatsApp Business API</b><p>Comunicação institucional</p></div>
-          <div class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
-        <div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Servidor de E-mail SMTP</b><p>Comunicados e circulares</p></div>
-          <div class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
-        <div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🏦</div><div><b>Multicaixa Express / EMIS</b><p>Pagamento de propinas online</p></div>
-          <div class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
-        <div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">☁️</div><div><b>Armazenamento em Nuvem</b><p>Backup e arquivo digital</p></div>
-          <div class="sw on" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
-        <div class="list-item"><div class="ic" style="background:#eef1f6;color:#5b6b85">📄</div><div><b>Exportação PDF / Excel</b><p>Relatórios e documentos</p></div>
-          <div class="sw" style="margin-left:auto" onclick="this.classList.toggle('on')"></div></div>
-      </div>`);
+    const integ = '<div class="list">' +
+      '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Gateway de SMS</b><p>Envio de notificações a encarregados</p></div><div class="sw on" style="margin-left:auto" onclick="this.classList.toggle(\'on\')"></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>WhatsApp Business API</b><p>Comunicação institucional</p></div><div class="sw on" style="margin-left:auto" onclick="this.classList.toggle(\'on\')"></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e6f7ed;color:#16a34a">✅</div><div><b>Servidor de E-mail SMTP</b><p>Comunicados e circulares</p></div><div class="sw on" style="margin-left:auto" onclick="this.classList.toggle(\'on\')"></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#e8f1fb;color:#0f4c81">🏦</div><div><b>Multicaixa Express / EMIS</b><p>Pagamento de propinas online</p></div><div class="sw on" style="margin-left:auto" onclick="this.classList.toggle(\'on\')"></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#fef4e2;color:#f59e0b">☁️</div><div><b>Armazenamento em Nuvem</b><p>Backup e arquivo digital</p></div><div class="sw on" style="margin-left:auto" onclick="this.classList.toggle(\'on\')"></div></div>' +
+      '<div class="list-item"><div class="ic" style="background:#eef1f6;color:#5b6b85">📄</div><div><b>Exportação PDF / Excel</b><p>Relatórios e documentos</p></div><div class="sw" style="margin-left:auto" onclick="this.classList.toggle(\'on\')"></div></div>' +
+      '</div>';
+    corpo = card('Integrações Externas','Serviços conectados à plataforma', integ);
   }
 
-  return `<div class="chips">
-    ${[['institucional','🏫 Institucional'],['utilizadores','👤 Utilizadores'],['permissoes','🔑 Perfis e Permissões'],['integracoes','🔌 Integrações']]
-      .map(([k,l])=>`<div class="chip ${chip===k?'on':''}" onclick="chip('admin','${k}')">${l}</div>`).join('')}
-  </div>${corpo}`;
+  let chips = '<div class="chips">';
+  const opts = [['institucional','🏫 Institucional'],['utilizadores','👤 Utilizadores'],['permissoes','🔑 Perfis e Permissões'],['integracoes','🔌 Integrações']];
+  for(let i=0;i<opts.length;i++){
+    chips += '<div class="chip ' + (chip===opts[i][0]?'on':'') + '" onclick="chip(\'admin\',\'' + opts[i][0] + '\')">' + opts[i][1] + '</div>';
+  }
+  chips += '</div>';
+
+  return chips + corpo;
 };
 
 /* =========================================================
    5. ROUTER E ACÇÕES
    ========================================================= */
-function chip(modulo, valor){ estado.chips[modulo]=valor; render(); }
+function chip(modulo, valor){ estado.chips[modulo] = valor; render(); }
 
 function go(id){
   if(!temAcesso(id)){ toast('Sem permissão para acessar este módulo','🔒'); return; }
   estado.view = id;
   render();
   document.getElementById('sidebar').classList.remove('open');
-  const m = document.querySelector('main');
-  if(m) m.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function render(){
-  const m = MODULOS.find(x=>x.id===estado.view) || MODULOS[0];
+  const m = MODULOS.filter(x=>x.id===estado.view)[0] || MODULOS[0];
   el('page-title').textContent = m.nome;
   el('crumb').textContent = m.grupo;
   el('view').innerHTML = VIEWS[estado.view] ? VIEWS[estado.view]() : '<p>Módulo indisponível.</p>';
 
-  document.querySelectorAll('.nav-item').forEach(n=>{
-    n.classList.toggle('active', n.dataset.id===estado.view);
-  });
+  const items = document.querySelectorAll('.nav-item');
+  for(let i=0;i<items.length;i++){
+    items[i].classList.toggle('active', items[i].dataset.id === estado.view);
+  }
 
-  document.querySelectorAll('[data-filter]').forEach(inp=>{
-    inp.addEventListener('input', ()=>{
-      const t = document.getElementById(inp.dataset.filter);
+  const filters = document.querySelectorAll('[data-filter]');
+  for(let i=0;i<filters.length;i++){
+    filters[i].addEventListener('input', function(){
+      const t = document.getElementById(this.dataset.filter);
       if(!t) return;
-      const q = inp.value.toLowerCase();
-      t.querySelectorAll('tbody tr').forEach(tr=>{
-        tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
-      });
+      const q = this.value.toLowerCase();
+      const trs = t.querySelectorAll('tbody tr');
+      for(let j=0;j<trs.length;j++){
+        trs[j].style.display = trs[j].textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+      }
     });
-  });
+  }
 }
 
 function construirNav(){
   const grupos = {};
-  MODULOS.filter(m=>temAcesso(m.id)).forEach(m=>{
-    (grupos[m.grupo] = grupos[m.grupo] || []).push(m);
-  });
-  let html='';
+  for(let i=0;i<MODULOS.length;i++){
+    const m = MODULOS[i];
+    if(!temAcesso(m.id)) continue;
+    if(!grupos[m.grupo]) grupos[m.grupo] = [];
+    grupos[m.grupo].push(m);
+  }
+  let html = '';
   for(const g in grupos){
-    html += `<div class="nav-group">${g}</div>`;
-    grupos[g].forEach(m=>{
-      html += `<div class="nav-item" data-id="${m.id}" onclick="go('${m.id}')">
-        <span class="ic">${m.ic}</span><span>${m.nome}</span></div>`;
-    });
+    html += '<div class="nav-group">' + g + '</div>';
+    const arr = grupos[g];
+    for(let i=0;i<arr.length;i++){
+      html += '<div class="nav-item" data-id="' + arr[i].id + '" onclick="go(\'' + arr[i].id + '\')">' +
+        '<span class="ic">' + arr[i].ic + '</span><span>' + arr[i].nome + '</span></div>';
+    }
   }
   el('nav').innerHTML = html;
 }
@@ -1541,52 +1602,53 @@ function construirNav(){
 /* ---------- Acções ---------- */
 function registarPagamento(){
   const alunoId = el('pgAluno').value;
-  const aluno = DB.alunos.find(a=>a.id===alunoId);
+  const aluno = DB.alunos.filter(a=>a.id===alunoId)[0];
   const tipo = el('pgTipo').value;
-  const valor = Number(el('pgValor').value)||0;
+  const valor = Number(el('pgValor').value) || 0;
   const metodo = el('pgMetodo').value;
   if(!aluno || valor<=0){ toast('Preencha os dados correctamente','⚠️'); return; }
 
   DB.pagamentos.push({
     id:'PG'+String(5000+DB.pagamentos.length+1),
     aluno: aluno.nome, alunoId, tipo, valor, metodo,
-    data: new Date().toLocaleDateString('pt-PT'),
-    mes: new Date().getMonth()
+    data: new Date().toLocaleDateString('pt-PT')
   });
   aluno.divida = Math.max(0, aluno.divida - valor);
   persistir();
-  toast(`Pagamento de ${KZ(valor)} registado para ${aluno.nome}`,'💵');
+  toast('Pagamento de ' + KZ(valor) + ' registado para ' + aluno.nome,'💵');
   render();
 }
 
 function enviarComunicado(){
   const assunto = el('cmAssunto').value.trim();
   if(!assunto){ toast('Indique o assunto da mensagem','⚠️'); return; }
-  toast(`Mensagem "${assunto}" enviada via ${el('cmCanal').value}`,'📤');
-  el('cmAssunto').value=''; el('cmMsg').value='';
+  toast('Mensagem "' + assunto + '" enviada via ' + el('cmCanal').value,'📤');
+  el('cmAssunto').value = '';
+  el('cmMsg').value = '';
 }
 
 function modalMatricula(){
-  const html = `
-    <div class="modal-bg" onclick="if(event.target===this)fecharModal()">
-      <div class="modal">
-        <h3>📝 Nova Matrícula</h3>
-        <p class="sub">Preencha os dados do novo aluno para criar o processo académico.</p>
-        <div class="form-grid">
-          <div class="field" style="grid-column:1/-1"><label>Nome Completo</label><input id="nmNome" placeholder="Nome do aluno"></div>
-          <div class="field"><label>Data de Nascimento</label><input id="nmNasc" type="date" value="2012-01-01"></div>
-          <div class="field"><label>Género</label><select id="nmGen"><option value="M">Masculino</option><option value="F">Feminino</option></select></div>
-          <div class="field"><label>Classe</label><select id="nmClasse">${CLASSES.map(c=>`<option>${c}</option>`).join('')}</select></div>
-          <div class="field"><label>Turma</label><select id="nmTurma"><option>A</option><option>B</option><option>C</option></select></div>
-          <div class="field"><label>Encarregado</label><input id="nmEnc" placeholder="Nome do encarregado"></div>
-          <div class="field"><label>Contacto</label><input id="nmTel" placeholder="+244 9XX XXX XXX"></div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn ghost" onclick="fecharModal()">Cancelar</button>
-          <button class="btn ok" onclick="guardarMatricula()">💾 Confirmar Matrícula</button>
-        </div>
-      </div>
-    </div>`;
+  const optsClasse = CLASSES.map(c=>'<option>'+c+'</option>').join('');
+  const html =
+    '<div class="modal-bg" onclick="if(event.target===this)fecharModal()">' +
+      '<div class="modal">' +
+        '<h3>📝 Nova Matrícula</h3>' +
+        '<p class="sub">Preencha os dados do novo aluno para criar o processo académico.</p>' +
+        '<div class="form-grid">' +
+          '<div class="field" style="grid-column:1/-1"><label>Nome Completo</label><input id="nmNome" placeholder="Nome do aluno"></div>' +
+          '<div class="field"><label>Data de Nascimento</label><input id="nmNasc" type="date" value="2012-01-01"></div>' +
+          '<div class="field"><label>Género</label><select id="nmGen"><option value="M">Masculino</option><option value="F">Feminino</option></select></div>' +
+          '<div class="field"><label>Classe</label><select id="nmClasse">' + optsClasse + '</select></div>' +
+          '<div class="field"><label>Turma</label><select id="nmTurma"><option>A</option><option>B</option><option>C</option></select></div>' +
+          '<div class="field"><label>Encarregado</label><input id="nmEnc" placeholder="Nome do encarregado"></div>' +
+          '<div class="field"><label>Contacto</label><input id="nmTel" placeholder="+244 9XX XXX XXX"></div>' +
+        '</div>' +
+        '<div class="modal-actions">' +
+          '<button class="btn ghost" onclick="fecharModal()">Cancelar</button>' +
+          '<button class="btn ok" onclick="guardarMatricula()">💾 Confirmar Matrícula</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
 }
 
@@ -1600,7 +1662,7 @@ function guardarMatricula(){
   if(!nome){ toast('Introduza o nome do aluno','⚠️'); return; }
   DB.alunos.unshift({
     id:'AL'+String(1000+DB.alunos.length+1),
-    nome,
+    nome: nome,
     classe: el('nmClasse').value,
     turma: el('nmTurma').value,
     genero: el('nmGen').value,
@@ -1610,12 +1672,11 @@ function guardarMatricula(){
     freq: 100,
     encarregado: el('nmEnc').value || '—',
     telefone: el('nmTel').value || '—',
-    nasc: el('nmNasc').value.split('-').reverse().join('/'),
-    tipo:'Matrícula'
+    nasc: el('nmNasc').value.split('-').reverse().join('/')
   });
   persistir();
   fecharModal();
-  toast(`Matrícula de ${nome} registada com sucesso`,'🎓');
+  toast('Matrícula de ' + nome + ' registada com sucesso','🎓');
   render();
 }
 
@@ -1638,22 +1699,23 @@ function entrar(){
     el('login').style.display = 'none';
     el('app').classList.add('on');
 
-    toast(`Bem-vindo(a), ${estado.nome}`, '👋');
+    toast('Bem-vindo(a), ' + estado.nome, '👋');
   }catch(err){
     console.error('Erro ao entrar:', err);
     alert('Não foi possível entrar: ' + err.message +
-          '\n\nUsa o botão "Limpar dados guardados e recomeçar" no ecrã de login.');
+          '\n\nUsa o botão "Limpar dados guardados e recomeçar".');
   }
 }
 
 function sair(){
   el('app').classList.remove('on');
   el('login').style.display = 'grid';
-  document.querySelectorAll('.modal-bg').forEach(m=>m.remove());
+  const modais = document.querySelectorAll('.modal-bg');
+  for(let i=0;i<modais.length;i++) modais[i].remove();
 }
 
 function resetSistema(){
-  if(!confirm('Isto apaga todos os dados guardados neste navegador e recomeça com dados de demonstração. Continuar?')) return;
+  if(!confirm('Isto apaga todos os dados guardados e recomeça com dados de demonstração. Continuar?')) return;
   try{ localStorage.removeItem(LS); }catch(e){}
   DB = gerarDados();
   DB.__v = LS_VERSION;
@@ -1664,9 +1726,9 @@ function resetSistema(){
 /* ---------- Arranque ---------- */
 (function iniciar(){
   try{
-    el('pass').addEventListener('keydown', e=>{ if(e.key==='Enter') entrar(); });
-    el('nome').addEventListener('keydown', e=>{ if(e.key==='Enter') entrar(); });
-    el('perfil').addEventListener('keydown', e=>{ if(e.key==='Enter') entrar(); });
+    el('pass').addEventListener('keydown', function(e){ if(e.key==='Enter') entrar(); });
+    el('nome').addEventListener('keydown', function(e){ if(e.key==='Enter') entrar(); });
+    el('perfil').addEventListener('keydown', function(e){ if(e.key==='Enter') entrar(); });
   }catch(err){
     console.error('Falha na inicialização:', err);
   }
