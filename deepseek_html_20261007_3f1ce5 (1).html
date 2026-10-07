@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!GEST-WILDAKA html>
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -203,8 +203,8 @@ tbody tr:last-child td{border-bottom:none}
       </select>
     </div>
     <div class="field">
-      <label>Nome do Utilizador</label>
-      <input id="nome" placeholder="Ex.: Wilda Kambala" value="Wilda Kambala">
+      <label>Nome de Utilizador</label>
+      <input id="nome" placeholder="Ex.: Umbelino Clemente" value="Umbelino Clemente">
     </div>
     <div class="field">
       <label>Palavra-passe</label>
@@ -212,7 +212,7 @@ tbody tr:last-child td{border-bottom:none}
     </div>
     <button class="btn full" onclick="entrar()">🔓 Entrar no Sistema</button>
     <button class="btn ghost full" onclick="resetSistema()" style="margin-top:8px">🗑️ Limpar dados guardados e recomeçar</button>
-    <p class="hint">Não é necessário registar conta — escolhe um perfil e entra com qualquer palavra-passe.<br>Os dados são simulados e guardados no teu navegador.</p>
+    <p class="hint">selecione o seu perfil de utilizador, escreva o seu nome de utilizador e coloque a sua palavra-passe.</p>
   </div>
 </div>
 
@@ -240,7 +240,7 @@ tbody tr:last-child td{border-bottom:none}
       <div class="spacer"></div>
       <div class="user-chip">
         <div class="av" id="uav">W</div>
-        <div><b id="uname">Wilda Kambala</b><small id="urole">Director Geral</small></div>
+        <div><b id="uname">Umbelino Clemente</b><small id="urole">Director Geral</small></div>
       </div>
     </header>
     <div id="view"></div>
@@ -451,7 +451,7 @@ const MODULOS = [
   {id:'admin',       nome:'Administração do Sistema',   ic:'⚙️', grupo:'Gestão'}
 ];
 
-let estado = { perfil:'Director Geral', nome:'Wilda Kambala', view:'painel', chips:{} };
+let estado = { perfil:'Director Geral', nome:'Umbelino Clemente', view:'painel', chips:{} };
 const el = id => document.getElementById(id);
 
 function temAcesso(id){
@@ -1402,7 +1402,7 @@ VIEWS.relatorios = function(){
 
   return '<div class="grid g4" style="margin-bottom:16px">' +
     kpi('Relatórios Disponíveis', 24, 'Académicos, financeiros e administrativos','b','📈') +
-    kpi('Taxa de Aprovação', aprov+'%', 'Ano lectivo 2025','g','🏆') +
+    kpi('Taxa de Aprovação', aprov+'%', 'Ano lectivo','g','🏆') +
     kpi('Receita Total', KZ(total), 'Acumulado do ano','g','💰') +
     kpi('Inadimplência', inad+'%', KZ(divida)+' em dívida','r','⚠️') +
     '</div>' +
@@ -1494,7 +1494,7 @@ VIEWS.admin = function(){
   }
   else if(chip==='utilizadores'){
     const rows = [
-      ['Wilda Kambala','wilda.kambala','Director Geral','Hoje 08:12', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
+      ['Umbelino Clemente','Umbelino Clemente','Director Geral','Hoje 08:12', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
       ['Maria Fernandes','sec.maria','Secretária','Hoje 09:45', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
       ['João Baptista','tes.joao','Tesoureiro','Hoje 08:30', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
       ['António Costa','prof.antonio','Professor','Hoje 07:55', selo('Activo'),'<button class="btn sm ghost" onclick="toast(\'Editar\',\'✏️\')">Editar</button>'],
